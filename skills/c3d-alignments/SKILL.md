@@ -501,8 +501,11 @@ AlignmentType aType = align.AlignmentType;
 AlignmentCreationType cMode = align.CreationMode;
 
 // Cross slope at station (superelevation)
+// Valid values: LeftOutShoulderCrossSlope, LeftOutLaneCrossSlope, LeftInShoulderCrossSlope,
+//               LeftInLaneCrossSlope, RightOutShoulderCrossSlope, RightOutLaneCrossSlope,
+//               RightInShoulderCrossSlope, RightInLaneCrossSlope
 double slope = align.GetCrossSlopeAtStation(station,
-    SuperelevationCrossSegmentType.InsideLane, true);
+    SuperelevationCrossSegmentType.LeftInLaneCrossSlope, true); // adjust side as needed
 ```
 
 ## Gotchas
