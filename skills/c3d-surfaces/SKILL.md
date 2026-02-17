@@ -268,7 +268,7 @@ Adds points and recomputes triangles:
 ```csharp
 oSurface.BreaklinesDefinition.AddStandardBreaklines(
     new ObjectIdCollection(lines),
-    0,    // mid-ordinate distance
+    1.0,  // mid-ordinate distance (must be > 0.0; API throws ArgumentException if 0)
     10,   // maximumDistance (supplementing distance)
     5,    // weedingDistance
     5     // weedingAngle
