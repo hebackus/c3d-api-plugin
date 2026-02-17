@@ -39,7 +39,7 @@ CivilApplication
         │     └── ProfileViewBandSetStyles
         └── Settings (SettingsRoot)
               ├── DrawingSettings
-              └── GetSettings<T>() / GetFeatureSettings<T>()
+              └── GetSettings<T>()
 ```
 
 ## Accessing Application and Document
@@ -47,7 +47,11 @@ CivilApplication
 ```csharp
 using Autodesk.Civil.ApplicationServices;
 
+// From active document shortcut
 CivilDocument doc = CivilApplication.ActiveDocument;
+
+// From any Database (works for non-active documents too)
+CivilDocument doc = CivilDocument.GetCivilDocument(database);
 ```
 
 **Note:** `CivilApplication` does NOT inherit from AutoCAD's `Application`. For application-level access (open documents, main window), use `Autodesk.AutoCAD.ApplicationServices.Application` directly.

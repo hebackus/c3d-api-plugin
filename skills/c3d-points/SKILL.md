@@ -14,25 +14,41 @@ All points are in `CivilDocument.CogoPoints` (`CogoPointCollection`):
 ```csharp
 CogoPointCollection cogoPoints = doc.CogoPoints;
 
-// Add individual point
-ObjectId pointId = cogoPoints.Add(new Point3d(4958, 4079, 200));
-
-// Add multiple points
-Point3d[] pts = { new Point3d(4927, 3887, 150), new Point3d(5101, 3660, 250) };
-cogoPoints.Add(new Point3dCollection(pts));
+// Add individual point (useNextPointNumSetting: true = auto-assign number)
+ObjectId pointId = cogoPoints.Add(new Point3d(4958, 4079, 200), true);
 
 // Add with description
-cogoPoints.Add(new Point3d(100, 200, 225), "GRND");
+ObjectId pointId2 = cogoPoints.Add(new Point3d(100, 200, 225), "GRND", true);
+
+// Add with description + description key matching
+ObjectId pointId3 = cogoPoints.Add(
+    new Point3d(100, 200, 225), "GRND",
+    useDescriptionKey: true, matchOnParams: true, useNextPointNumSetting: true);
+
+// Add multiple points
+Point3dCollection pts = new Point3dCollection(
+    new[] { new Point3d(4927, 3887, 150), new Point3d(5101, 3660, 250) });
+ObjectIdCollection ids = cogoPoints.Add(pts, true);
+
+// Add multiple with description
+ObjectIdCollection ids2 = cogoPoints.Add(pts, "GRND", true);
+
+// Lookup and membership
+ObjectId found = cogoPoints.GetPointByPointNumber(100);
+bool exists = cogoPoints.Contains(100);   // check by point number
+uint total = cogoPoints.Count;
 
 // Iterate
-foreach (ObjectId pointId in cogoPoints)
+foreach (ObjectId pid in cogoPoints)
 {
-    CogoPoint pt = pointId.GetObject(OpenMode.ForRead) as CogoPoint;
+    CogoPoint pt = pid.GetObject(OpenMode.ForRead) as CogoPoint;
     ed.WriteMessage("Point #{0}: Elev={1}\n", pt.PointNumber, pt.Elevation);
 }
 
-// Remove by point number
-cogoPoints.Remove(779);
+// Remove
+cogoPoints.Remove(779);             // by point number
+cogoPoints.Remove(pointId);         // by ObjectId
+cogoPoints.Clear();                  // remove all points
 ```
 
 ## CogoPoint Properties
@@ -40,28 +56,69 @@ cogoPoints.Remove(779);
 ```csharp
 CogoPoint pt = pointId.GetObject(OpenMode.ForWrite) as CogoPoint;
 
-// Settable properties
+// Identity
 pt.PointName = "point1";
 pt.RawDescription = "Point description";
-pt.PointNumber = 100;    // Throws if number already exists
-pt.Renumber(100);        // Uses conflict resolution settings
+pt.DescriptionFormat = "$*";           // Format string ($* = raw description)
+pt.PointNumber = 100;                  // Throws if number already exists
+pt.Renumber(100);                      // Uses default conflict resolution
+pt.Renumber(100, PointNumberResolveType.UseNext); // Explicit resolution type
 
-// Read-only
-string fullDesc = pt.FullDescription;  // Read-only after creation
+// Read-only descriptors
+string fullDesc = pt.FullDescription;  // Computed from DescriptionFormat + RawDescription
 Point3d location = pt.Location;        // Read-only, use Easting/Northing/Elevation
+ObjectId primaryGroup = pt.PrimaryPointGroupId;
+bool movable = pt.IsMovable;
+bool survey = pt.IsSurveyPoint;
 
 // Position (read/write)
 double easting = pt.Easting;
 double northing = pt.Northing;
 double elevation = pt.Elevation;
 
-// Grid coordinates
+// Grid coordinates (read/write)
 double gridE = pt.GridEasting;
 double gridN = pt.GridNorthing;
 
-// Geographic coordinates
+// Geographic coordinates (read/write)
 double lat = pt.Latitude;
 double lon = pt.Longitude;
+double conv = pt.Convergence;          // read-only
+
+// Display properties
+pt.IsLocked = true;                    // Lock/unlock point
+pt.ShowToolTip = true;
+pt.MarkerRotation = 0.785;            // radians
+pt.LabelRotation = 0.0;
+pt.LabelLocation = new Point3d(100, 200, 0);
+pt.ScaleXY = 1.0;
+pt.ScaleZ = 1.0;
+double scale = pt.Scale;              // read-only computed scale
+
+// Label visibility and pinning
+pt.IsLabelVisible = true;
+pt.IsLabelPinned = false;
+bool dragged = pt.IsLabelDragged;     // read-only
+
+// Leader properties
+pt.LeaderVisibility = LeaderVisibilityType.Always;
+pt.LeaderAttachment = LeaderAttachmentBehaviorType.TopOfText;
+pt.LeaderTailVisibility = LeaderTailVisibilityType.UseStyle;
+
+// Label text component overrides
+ObjectIdCollection compIds = pt.GetLabelTextComponentIds();
+pt.SetLabelTextComponentOverride(compIds[0], "Custom Text");
+string overrideText = pt.GetLabelTextComponentOverride(compIds[0]);
+bool isOverridden = pt.IsLabelTextComponentOverriden(compIds[0]);
+pt.ClearLabelTextComponentOverrides(compIds[0]); // clear one
+pt.ClearAllLabelTextComponentOverrides();          // clear all
+pt.ResetLabel();
+pt.ResetLabelLocation();
+pt.ResetLabelRotation();
+
+// Style assignment
+pt.StyleId = pointStyleId;
+pt.LabelStyleId = labelStyleId;
 
 // Project points
 if (pt.IsProjectPoint)
@@ -71,8 +128,11 @@ if (pt.IsProjectPoint)
 }
 
 // Override values (read-only, set by PointGroup)
-// pt.ElevationOverride, pt.FullDescriptionOverride
+// pt.ElevationOverride, pt.FullDescriptionOverride, pt.RawDescriptionOverride
 // pt.LabelStyleIdOverride, pt.StyleIdOverride
+
+// Apply description keys to this point
+pt.ApplyDescriptionKeys();
 ```
 
 ## Bulk Editing
@@ -92,7 +152,29 @@ cogoPoints.SetRawDescription(cogoPoints, "NEW_DESC");
 // Set full description format ($* = same as raw description)
 cogoPoints.SetDescriptionFormat(cogoPoints, "$*");
 
-// Also available: SetPointNumber, SetStyleId, SetLabelStyleId, etc.
+// Set elevation from a surface
+cogoPoints.SetElevationBySurface(cogoPoints, surfaceId);
+
+// Set position components
+cogoPoints.SetEasting(cogoPoints, 1000.0);
+cogoPoints.SetNorthing(cogoPoints, 2000.0);
+
+// Set scale
+cogoPoints.SetScaleXY(cogoPoints, 1.0);
+cogoPoints.SetScaleZ(cogoPoints, 1.0);
+
+// Set rotation
+cogoPoints.SetMarkerRotation(cogoPoints, 0.785);
+cogoPoints.SetLabelRotation(cogoPoints, 0.0);
+
+// Set point name (single point only, or list with individual values)
+cogoPoints.SetPointName(pointId, "PT1");
+
+// Lock/unlock and tooltips
+cogoPoints.SetIsLocked(cogoPoints, true);
+cogoPoints.SetShowTooltips(cogoPoints, true);
+
+// Also available: SetPointNumber, SetStyleId, SetLabelStyleId
 ```
 
 ## Point Groups
@@ -100,21 +182,67 @@ cogoPoints.SetDescriptionFormat(cogoPoints, "$*");
 Point groups define subsets of points. All groups in `doc.PointGroups`.
 
 ```csharp
+PointGroupCollection pgCollection = doc.PointGroups;
+
 // Create
-ObjectId pgId = doc.PointGroups.Add("My Point Group");
+ObjectId pgId = pgCollection.Add("My Point Group");
 PointGroup pg = pgId.GetObject(OpenMode.ForWrite) as PointGroup;
+pg.Description = "Optional description";
+
+// Lookup
+bool exists = pgCollection.Contains("My Point Group");
+ObjectId existingId = pgCollection["My Point Group"]; // by name
+ObjectId byIndex = pgCollection[0];                    // by index
+int count = pgCollection.Count;
 
 // Special group: all points
-ObjectId allPtsId = doc.PointGroups.AllPointGroupsId;
+ObjectId allPtsId = pgCollection.AllPointsPointGroupId;
+string allPtsName = PointGroup.AllPointsGroupName; // static property
 
-// Check membership
+// Remove
+pgCollection.Remove(pgId);
+pgCollection.Remove("My Point Group");
+
+// Check membership and get points
 if (pg.ContainsPoint(cogoPoint.PointNumber))
     ed.WriteMessage("Point is in group\n");
+uint[] pointNumbers = pg.GetPointNumbers();
+uint pointCount = pg.PointsCount;
+bool isAllPoints = pg.IsAllPointsGroup;
+
+// Lock/unlock all points in group
+pg.LockPoints();
+pg.UnlockPoints();
+pg.IsLocked = true; // lock the group itself
+
+// Delete all points in group
+pg.DeletePoints();
+
+// Point style/label style overrides for group
+pg.PointStyleId = styleId;
+pg.IsPointStyleOverridden = true;
+pg.PointLabelStyleId = labelStyleId;
+pg.IsPointLabelStyleOverridden = true;
 
 // Override elevations for all points in group
 pg.ElevationOverride.FixedElevation = 100;
 pg.ElevationOverride.ActiveOverrideType = PointGroupOverrideType.FixedValue;
-pg.IsElevationOverriden = true;
+pg.IsElevationOverridden = true;
+
+// Override raw descriptions for all points in group
+pg.RawDescriptionOverride.FixedRawDescription = "OVERRIDE";
+pg.RawDescriptionOverride.ActiveOverrideType = PointGroupOverrideType.FixedValue;
+pg.IsRawDescriptionOverridden = true;
+
+// Draw order (controls display priority)
+ObjectIdCollection drawOrder = pgCollection.DrawOrder;
+// Rearrange as needed...
+pgCollection.DrawOrder = drawOrder;
+
+// Update management
+bool outOfDate = pg.IsOutOfDate;
+ObjectIdCollection staleGroups = pgCollection.GetOutOfDatePointGroupIds();
+pgCollection.UpdateAllPointGroups();
 ```
 
 ### Standard Queries
@@ -324,22 +452,79 @@ Wildcards `?` and `*` are supported in the `Code` property.
 ## Using Points with TIN Surfaces
 
 ```csharp
-// Add point group to surface
-TinSurface surface = ...;
-// surface.PointGroupsDefinition - collection exists but adding is NOT supported via API
+// Add point group as surface data source
+TinSurface surface = surfaceId.GetObject(OpenMode.ForWrite) as TinSurface;
+surface.PointGroupsDefinition.AddPointGroup(pointGroupId);
+
+// Set elevation from surface (bulk, on CogoPointCollection)
+cogoPoints.SetElevationBySurface(pointId, surfaceId);
+cogoPoints.SetElevationBySurface(pointIds, surfaceId);
+```
+
+## Import / Export Points
+
+```csharp
+// Get available file formats
+PointFileFormatCollection formats =
+    PointFileFormatCollection.GetPointFileFormats(acaddoc.Database);
+PointFileFormat pnezd = formats["PNEZD (comma delimited)"];
+
+// Import points from file
+uint importedCount = CogoPointCollection.ImportPoints(
+    @"C:\points.csv", pnezd);
+
+// Import into a specific point group
+uint importedCount2 = CogoPointCollection.ImportPoints(
+    @"C:\points.csv", pnezd, pointGroupId);
+
+// Import with coordinate options
+uint importedCount3 = CogoPointCollection.ImportPoints(
+    @"C:\points.csv", pnezd,
+    useAdjustedElevation: false,
+    shouldTransformCoordinate: false,
+    shouldExpandCoordinateData: false);
+
+// Export points to file
+uint exportedCount = CogoPointCollection.ExportPoints(
+    @"C:\output.csv", pnezd);
+
+// Export specific point group
+uint exportedCount2 = CogoPointCollection.ExportPoints(
+    @"C:\output.csv", pnezd, pointGroupId);
+```
+
+## Reading / Writing UDP Values on Points
+
+```csharp
+CogoPoint pt = pointId.GetObject(OpenMode.ForWrite) as CogoPoint;
+
+// Set UDP values (typed overloads)
+pt.SetUDPValue(udpInteger, 42);
+pt.SetUDPValue(udpDouble, 3.14);
+pt.SetUDPValue(udpString, "hello");
+pt.SetUDPValue(udpBoolean, true);
+pt.SetUDPValue(udpEnumeration, "ValueName");
+
+// Get UDP values (typed overloads)
+int intVal = pt.GetUDPValue(udpInteger);
+double dblVal = pt.GetUDPValue(udpDouble);
+string strVal = pt.GetUDPValue(udpString);
+bool boolVal = pt.GetUDPValue(udpBoolean);
+string enumVal = pt.GetUDPValue(udpEnumeration);
 ```
 
 ## Gotchas
 
 - `PointNumber` setter throws if number exists; use `Renumber()` for conflict resolution
-- `FullDescription` is read-only after point creation
+- `FullDescription` is read-only (computed from `DescriptionFormat` + `RawDescription`)
 - `Location` is read-only; modify via `Easting`, `Northing`, `Elevation`
 - Accessing `IsCheckedOut`/`ProjectVersion` on non-project points throws
+- All `Add` overloads on `CogoPointCollection` require a `bool useNextPointNumSetting` parameter
 - Point group overrides take precedence over individual point settings
 - `StandardPointGroupQuery` ORs all includes and ORs all excludes
 - Pending changes aren't registered when the query itself changes, only when matching points are added/removed
-- Adding point groups to TIN surfaces is NOT supported via .NET API
 - Description key search order determines priority when multiple keys match
+- `SetPointName` on `CogoPointCollection` has no "set all to same value" overload (unlike other bulk methods)
 
 ## Related Skills
 

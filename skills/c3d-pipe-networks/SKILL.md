@@ -69,7 +69,8 @@ foreach (ObjectId plId in partsListCol)
 ## Creating a Pipe Network
 
 ```csharp
-ObjectId networkId = Network.Create(doc, "My Network");
+string networkName = "My Network";
+ObjectId networkId = Network.Create(doc, ref networkName);
 Network network = ts.GetObject(networkId, OpenMode.ForWrite) as Network;
 
 // Set reference surface (for pipe rules like rim elevation)
@@ -99,8 +100,27 @@ LineSegment3d line = new LineSegment3d(
 ObjectId newPipeId = ObjectId.Null;
 network.AddLinePipe(pipeFamilyId, pipeSize, line, ref newPipeId, false);
 
-// Curved pipe
-// network.AddCurvePipe(...)
+// Curved pipe (Civil 3D 2023+)
+PipeCurveGeometry curveGeom = new PipeCurveGeometry(...);
+ObjectId curvedPipeId = network.AddCurvePipe(pipeFamilyId, pipeSize, curveGeom, false);
+```
+
+## Breaking and Moving Pipes
+
+```csharp
+// Break a pipe at a point, inserting a structure at the break
+ObjectId newPipeId = ObjectId.Null;
+network.BreakPipe(pipeIdToBreak, breakPoint, existingStructureId, ref newPipeId);
+
+// Move parts between networks
+ObjectIdCollection partIds = new ObjectIdCollection();
+partIds.Add(pipeId);
+network.MoveParts(partIds, destinationNetworkId);
+
+// Find shortest path between two parts
+double minLength = 0;
+ObjectIdCollection pathIds = Network.FindShortestNetworkPath(
+    startPartId, endPartId, ref minLength);
 ```
 
 ## Creating Structures
@@ -115,18 +135,33 @@ network.AddStructure(structFamilyId, structSize, location,
 ## Connecting Pipes and Structures
 
 ```csharp
-// Connect pipe to structure
-pipe.ConnectToStructure(structureId, isStart: true);
+// Connect pipe to structure at start or end
+pipe.ConnectToStructure(ConnectorPositionType.Start, structureId, false);
+pipe.ConnectToStructure(ConnectorPositionType.End, structureId, false);
 
 // Connect structure to pipe
-structure.ConnectToPipe(pipeId);
+structure.ConnectToPipe(pipeId, ConnectorPositionType.Start);
+
+// Connect pipe to pipe (creates a new junction structure automatically)
+ObjectId newJunctionId = ObjectId.Null;
+pipe1.ConnectToPipe(ConnectorPositionType.End, pipe2Id,
+    ConnectorPositionType.Start, structFamilyId, structSizeId,
+    ref newJunctionId, true /* applyRules */, false /* force */);
+
+// Disconnect pipe at an endpoint
+pipe.Disconnect(ConnectorPositionType.Start);
+// Disconnect structure from a specific pipe
+structure.Disconnect(pipeId);
 
 // Pipe endpoints
 ObjectId startStruct = pipe.StartStructureId;
 ObjectId endStruct = pipe.EndStructureId;
 
 // Structure connections
-var connectedPipes = structure.ConnectedPipe; // read-only collection
+int count = structure.ConnectedPipesCount;
+string[] pipeNames = structure.GetConnectedPipeNames();
+bool flowsIn = structure.IsConnectedPipeFlowingIn(0);
+bool flowsOut = structure.IsConnectedPipeFlowingOut(0);
 ```
 
 **Note:** Connecting pipes directly creates a virtual `Structure` as the joint. Disconnect a pipe before connecting to a different structure.
@@ -169,7 +204,7 @@ style.GetHatchStylePlan().HatchType = HatchType.PreDefined;
 style.PlanOption.HatchOptions = PipeHatchType.HatchToInnerWalls;
 
 // Assign to pipe
-pipe.Style = pipeStyle;
+pipe.StyleId = pipeStyleId;
 ```
 
 ## Structure Styles
@@ -199,7 +234,41 @@ var pipeLabelStyles = doc.Styles.LabelStyles.PipeLabelStyles;
 var structLabelStyles = doc.Styles.LabelStyles.StructureLabelStyles;
 ```
 
-**Limitation:** The label style of an individual pipe or structure cannot be set using the .NET API.
+## Creating Labels with Specific Styles
+
+Individual pipe and structure labels can be created with a specific label style, or the style can be changed after creation via `Label.StyleId`.
+
+```csharp
+// Plan pipe label with specific style
+ObjectId labelId = PipeLabel.Create(pipeId, 0.5 /* ratio */, labelStyleId);
+
+// Plan structure label with specific style and location
+ObjectId sLabelId = StructureLabel.Create(structureId, labelStyleId, labelLocation);
+
+// Profile pipe label with specific style
+ObjectId ppLabelId = PipeProfileLabel.Create(
+    profileViewPartId, profileViewId, 0.5 /* ratio */, labelStyleId);
+
+// Profile structure label with specific style
+ObjectId spLabelId = StructureProfileLabel.Create(
+    profileViewId, profileViewPartId, labelStyleId);
+
+// Section pipe label with specific style
+ObjectId secPLabelId = PipeSectionLabel.Create(
+    sectionViewId, pipeId, sectionPipeNetworkId, partIndex, labelStyleId);
+
+// Section structure label with specific style
+ObjectId secSLabelId = StructureSectionLabel.Create(
+    sectionViewId, structureId, sectionPipeNetworkId, partIndex, labelStyleId);
+
+// Change an existing label's style
+Label label = ts.GetObject(labelId, OpenMode.ForWrite) as Label;
+label.StyleId = newLabelStyleId;
+
+// Get existing labels on a pipe or structure
+ObjectIdCollection pipeLabels = pipe.GetPipeLabelIds();
+ObjectIdCollection structLabels = structure.GetAvailableStructureLabelIds();
+```
 
 ## Interference Checks
 
@@ -227,27 +296,91 @@ marker.MarkerSize = 5.5;
 // InterferenceModelType.Sphere - sphere at intersection
 ```
 
-**Limitation:** Performing interference checks and listing interferences are NOT supported in the .NET API. Only interference styles are supported.
+Existing `Interference` objects can be read to get the two intersecting network IDs:
+
+```csharp
+Interference interference = ts.GetObject(interferenceId, OpenMode.ForRead) as Interference;
+ObjectId net1 = interference.Network1Id;
+ObjectId net2 = interference.Network2Id;
+```
+
+**Note:** Creating/executing new interference checks programmatically is not exposed in the .NET API. Use the Civil 3D UI to run interference checks, then read the results via the `Interference` class.
 
 ## Pressure Pipe Networks
 
-Pressure networks use separate classes:
+Pressure networks use separate classes from the `AeccPressurePipesMgd` assembly:
 
 ```csharp
-// Classes: PressurePipeNetwork, PressurePipe, PressureFitting, PressureAppurtenance
+// Create a pressure network
+ObjectId pressNetId = PressurePipeNetwork.Create(db, "My Pressure Network");
+PressurePipeNetwork pressNet = ts.GetObject(pressNetId, OpenMode.ForWrite)
+    as PressurePipeNetwork;
+
+// Set references
+pressNet.ReferenceSurfaceId = surfaceId;
+pressNet.ReferenceAlignmentId = alignmentId;
+pressNet.PartsListId = partsListId;
+
+// Add parts
+LineSegment3d line = new LineSegment3d(startPt, endPt);
+ObjectId pipeId = pressNet.AddLinePipe(line, pressurePartSize);
+ObjectId fittingId = pressNet.AddFitting(location, fittingPartSize);
+ObjectId appurtId = pressNet.AddAppurtenance(location, appurtPartSize);
+
+// Get part collections
+ObjectIdCollection pipeIds = pressNet.GetPipeIds();
+ObjectIdCollection fittingIds = pressNet.GetFittingIds();
+ObjectIdCollection appurtIds = pressNet.GetAppurtenanceIds();
+
+// Set styles on individual parts
+PressurePipe pPipe = ts.GetObject(pipeId, OpenMode.ForWrite) as PressurePipe;
+pPipe.StyleId = pipeStyleId;
+
+PressureFitting fitting = ts.GetObject(fittingId, OpenMode.ForWrite) as PressureFitting;
+fitting.StyleId = fittingStyleId;
+
+PressureAppurtenance appurt = ts.GetObject(appurtId, OpenMode.ForWrite) as PressureAppurtenance;
+appurt.StyleId = appurtStyleId;
+
+// Set default label styles at network level
+pressNet.PipePlanLabelStyleId = pipeLabelStyleId;
+pressNet.FittingPlanLabelStyleId = fittingLabelStyleId;
+pressNet.AppurtenancePlanLabelStyleId = appurtLabelStyleId;
+pressNet.PipeProfileLabelStyleId = pipeProfileLabelStyleId;
+pressNet.FittingProfileLabelStyleId = fittingProfileLabelStyleId;
+pressNet.AppurtenanceProfileLabelStyleId = appurtProfileLabelStyleId;
+
+// Swap part size
+PressurePartSize newSize = ...; // from parts list
+pPipe.SwapPartSize(newSize);
 ```
 
-The pressure pipe network API follows similar patterns to gravity networks but with separate style collections for pipes, fittings, and appurtenances (three separate style selections needed).
+The pressure pipe network API follows similar patterns to gravity networks but with separate style collections for pipes, fittings, and appurtenances (three separate style selections needed). Pressure parts use `PressurePartSize` instead of family/size ObjectId pairs.
+
+## Network Catalog Custom Properties
+
+`NetworkCatalogDef` supports declaring custom part parameters:
+
+```csharp
+NetworkCatalogDef.DeclareNewParameter(
+    "globalContext", "displayContext", "paramName", "paramDesc",
+    PartCatalogDataType.Integer, PartParamUsageType.Dynamic,
+    "defaultUnits", false /* singleton */, false /* catManagedList */);
+
+NetworkCatalogDef.DeclarePartProperty("globalContext", DomainType.Pipe, PartType.Pipe);
+```
 
 ## Gotchas
 
 - `ReferenceSurfaceId` is used primarily for pipe rules (e.g., rim elevation relative to surface)
-- Dynamic properties created with `NetworkCatalogDef` are NOT supported in .NET
-- Individual pipe/structure label styles CANNOT be set via .NET API
-- Interference check execution and listing are NOT supported in .NET - only styles
+- `Network.Create` takes the network name as `ref string` - Civil 3D may modify the name to avoid duplicates
+- Individual pipe/structure labels CAN be created with a specific `labelStyleId` and changed after creation via `Label.StyleId`
+- Executing new interference checks is not exposed in .NET, but existing `Interference` objects can be read
 - Parts list items are identified by GUID - `PartFamily` can only contain one domain (pipe OR structure)
 - When creating a pipe style, add Try/Catch: `Add()` throws if name exists, use `Item()` to get existing
 - Connecting pipes directly creates virtual structure joints automatically
+- Pressure networks use `PressurePartSize` for part sizing instead of family/size ObjectId pairs
+- `Pipe.StyleId` has only a setter override on Pipe/Structure; the getter is inherited from `Entity`
 
 ## Label Filtering (from this codebase)
 

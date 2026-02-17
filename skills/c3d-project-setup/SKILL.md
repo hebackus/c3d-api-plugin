@@ -103,7 +103,7 @@ In project Properties > Debug:
 
 ## COM Interop (When .NET API is Incomplete)
 
-Some features are not exposed in .NET (sites, parcels, sections, data bands, some labels). Use COM interop:
+Most Civil 3D features are exposed in the .NET API, including sites, parcels, sections, section views, data bands, and labels. COM interop may still be needed for certain advanced or niche features not covered by the managed wrappers. Use COM interop:
 
 ```csharp
 // Add COM interop DLL references:

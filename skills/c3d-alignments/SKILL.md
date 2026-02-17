@@ -22,12 +22,26 @@ ObjectIdCollection sitelessAlignments = doc.GetSitelessAlignmentIds();
 ### Empty Alignment (no geometry)
 
 ```csharp
-// By ObjectIds (pass ObjectId.Null for siteless)
+// Overload 1: By name strings (pass "" for siteless)
 ObjectId alignId = Alignment.Create(doc, "New Alignment",
-    ObjectId.Null,  // site (Null = siteless)
+    "",             // site name ("" = siteless)
     "0",            // layer name
     "Basic",        // alignment style name
     "AllLabels"     // label set style name
+);
+
+// Overload 2: By ObjectIds (pass ObjectId.Null for siteless)
+ObjectId alignId = Alignment.Create(doc, "New Alignment",
+    ObjectId.Null,  // siteId (Null = siteless)
+    layerId,        // ObjectId of layer
+    styleId,        // ObjectId of alignment style
+    labelSetId      // ObjectId of label set style
+);
+
+// Overload 3: By ObjectIds with explicit AlignmentType
+ObjectId alignId = Alignment.Create(doc, "New Alignment",
+    ObjectId.Null, layerId, styleId, labelSetId,
+    AlignmentType.Centerline
 );
 ```
 
@@ -44,60 +58,176 @@ plops.AddCurvesBetweenTangents = true;
 plops.EraseExistingEntities = true;
 plops.PlineId = res.ObjectId;
 
+// String overload
 ObjectId alignId = Alignment.Create(doc, plops,
-    "New Alignment", "0", "Standard", "Standard");
+    "New Alignment", "MySite", "0", "Standard", "Standard");
+
+// ObjectId overload
+ObjectId alignId = Alignment.Create(doc, plops,
+    "New Alignment", siteId, layerId, styleId, labelSetId);
 ```
 
-### Offset Alignment
+### From Corridor Feature Line
 
 ```csharp
-Alignment align = ts.GetObject(alignId, OpenMode.ForRead) as Alignment;
-ObjectId offsetAlignId = align.CreateOffsetAlignment(10.0); // offset distance
-// Inherits name (with number suffix) and style, but NOT station labels/equations/design speeds
+ObjectId alignId = Alignment.Create(corridorFeatureLine,
+    "FL Alignment", siteId, layerId, styleId, labelSetId,
+    AlignmentType.Centerline);
+```
+
+### Offset Alignment (static methods)
+
+The instance method `CreateOffsetAlignment(double)` is deprecated since Civil 3D 2010. Use the static overloads instead:
+
+```csharp
+// By name strings (full station range)
+ObjectId offsetId = Alignment.CreateOffsetAlignment(db,
+    "Offset Align",       // new alignment name
+    "Parent Alignment",   // parent alignment name
+    10.0,                 // offset distance (positive = right)
+    "Standard"            // style name
+);
+
+// By name strings (partial station range)
+ObjectId offsetId = Alignment.CreateOffsetAlignment(db,
+    "Offset Align", "Parent Alignment", 10.0, "Standard",
+    100.0, 500.0          // startStation, endStation
+);
+
+// By ObjectIds (full station range)
+ObjectId offsetId = Alignment.CreateOffsetAlignment(
+    "Offset Align", parentAlignId, 10.0, styleId);
+
+// By ObjectIds (partial station range)
+ObjectId offsetId = Alignment.CreateOffsetAlignment(
+    "Offset Align", parentAlignId, 10.0, styleId, 100.0, 500.0);
+```
+
+### Connected Alignment
+
+```csharp
+ObjectId connectedId = Alignment.CreateConnectedAlignment(
+    "Connected Align", siteId, layerId, styleId, labelSetId,
+    connectedAlignmentParams);
+
+// Check if an alignment is connected
+bool isConnected = align.IsConnectedAlignment;
+ConnectedAlignmentInfo info = align.ConnectedAlignmentInfo;
 ```
 
 ### Site Operations
 
 ```csharp
-// Move to site
+// Copy to a named site
+align.CopyToSite("MySite");
+
+// Copy by site ObjectId
 align.CopyToSite(siteId);
 
-// Copy as siteless (from sited)
-align.CopyToSite(ObjectId.Null);  // or pass ""
+// Copy within the same site
+align.CopyToSameSite();
 ```
 
 ## Alignment Entities
 
-Entities are lines, curves, and spirals that form the alignment path.
+Entities are lines, curves, and spirals that form the alignment path. The collection supports fixed, floating, and free constraint types.
+
+### Iterating Entities
 
 ```csharp
-// Entity collection
 AlignmentEntityCollection entities = align.Entities;
 
-// Add a fixed curve
-AlignmentArc arc = align.Entities.AddFixedCurve(
-    previousEntityId, startPoint, middlePoint, endPoint);
-
-// Iterate and determine types
 foreach (AlignmentEntity ae in align.Entities)
 {
     switch (ae.EntityType)
     {
         case AlignmentEntityType.Arc:
             AlignmentArc myArc = ae as AlignmentArc;
-            ed.WriteMessage("Arc length: {0}\n", myArc.Length);
+            ed.WriteMessage("Arc R={0}, L={1}\n", myArc.Radius, myArc.Length);
+            break;
+        case AlignmentEntityType.Line:
+            AlignmentLine myLine = ae as AlignmentLine;
+            ed.WriteMessage("Line dir={0}\n", myLine.Direction);
             break;
         case AlignmentEntityType.Spiral:
             AlignmentSpiral mySpiral = ae as AlignmentSpiral;
+            ed.WriteMessage("Spiral A={0}\n", mySpiral.A);
             break;
-        // Also: Tangent, SpiralCurve, SpiralSpiral, etc.
+        // Also: SpiralCurve, SpiralSpiral, SpiralCurveSpiralCurveSpiral, etc.
     }
 }
 ```
 
-Each entity has `EntityId` and knows its before/after entities. Access by ID:
+### Accessing Entities
+
 ```csharp
-AlignmentEntity entity = entities.EntityAtId(entityId);
+AlignmentEntity entity = entities.EntityAtId(entityId);     // by entity ID
+AlignmentEntity entity = entities.GetEntityByOrder(index);   // by draw order
+AlignmentEntity entity = entities.EntityAtStation(rawStation); // by station
+int first = entities.FirstEntity;  // ID of first entity
+int last  = entities.LastEntity;   // ID of last entity
+```
+
+### Adding Fixed Entities (defined by coordinates)
+
+```csharp
+// Fixed lines
+AlignmentLine line = entities.AddFixedLine(startPoint, endPoint);
+AlignmentLine line = entities.AddFixedLine(prevEntityId, startPoint, endPoint);
+AlignmentLine line = entities.AddFixedLine(prevEntityId, distance);
+
+// Fixed curves (many overloads)
+AlignmentArc arc = entities.AddFixedCurve(prevEntityId, startPt, midPt, endPt);
+AlignmentArc arc = entities.AddFixedCurve(pt1, pt2, radius, isClockwise);
+AlignmentArc arc = entities.AddFixedCurve(centerPt, passThroughPt, isClockwise);
+AlignmentArc arc = entities.AddFixedCurve(centerPt, radius, isClockwise);
+AlignmentArc arc = entities.AddFixedCurve(pt1, dirAtPt1, radius, isClockwise);
+AlignmentArc arc = entities.AddFixedCurve(pt1, dirAtPt1, pt2);
+AlignmentArc arc = entities.AddFixedCurve(pt1, pt2, dirAtPt2);
+
+// Fixed spirals
+AlignmentSpiral sp = entities.AddFixedSpiral(prevId, startRadius, endRadius, length, spiralDef);
+AlignmentSpiral sp = entities.AddFixedSpiral(prevId, radius, length, spiralCurveType, spiralDef);
+AlignmentSpiral sp = entities.AddFixedSpiral(prevId, startPt, piPt, endPt, spiralDef);
+```
+
+### Adding Floating Entities (attached to one neighbor)
+
+```csharp
+// Floating lines
+AlignmentLine line = entities.AddFloatingLine(prevEntityId, length);
+AlignmentLine line = entities.AddFloatingLine(prevEntityId, passThroughPt);
+AlignmentLine line = entities.AddFloatingLine(length, nextEntityId);
+
+// Floating curves
+AlignmentArc arc = entities.AddFloatingCurve(prevEntityId, passThroughPt);
+AlignmentArc arc = entities.AddFloatingCurve(prevEntityId, radius, paramValue,
+    paramType, isClockwise);
+```
+
+### Adding Free Entities (constrained to two neighbors)
+
+```csharp
+// Free line between two entities
+AlignmentLine line = entities.AddFreeLine(prevEntityId, nextEntityId);
+
+// Free curve between two entities
+AlignmentArc arc = entities.AddFreeCurve(prevEntityId, nextEntityId,
+    passThroughPt);
+AlignmentArc arc = entities.AddFreeCurve(prevEntityId, nextEntityId,
+    paramValue, paramType, isGreaterThan180, curveType);
+
+// Free spiral-curve-spiral
+AlignmentSCS scs = entities.AddFreeSCS(prevEntityId, nextEntityId,
+    sp1Param, sp2Param, spType, radius, isGreaterThan180, spiralDef);
+```
+
+### Removing Entities
+
+```csharp
+entities.Remove(entity);
+entities.RemoveAt(index);
+entities.Clear();
 ```
 
 ## Stations
@@ -114,30 +244,88 @@ StationEquation eq = align.StationEquations.Add(
 
 ### Station Sets
 
+`StationTypes` is a flags enum (note the plural). Common values: `All`, `Major`, `Minor`, `GeometryPoint`, `Equation`, `SuperTransPoint`.
+
 ```csharp
 // Get all stations with major=100, minor=20
-Station[] stations = align.GetStationSet(StationType.All, 100, 20);
+Station[] stations = align.GetStationSet(StationTypes.All, 100, 20);
 foreach (Station s in stations)
 {
-    ed.WriteMessage("Station {0}, Type: {1}, Location: {2}\n",
-        s.RawStation, s.StnType, s.Location);
+    ed.WriteMessage("Station {0}, Type: {1}, Location: ({2},{3})\n",
+        s.RawStation, s.StationType, s.Location.X, s.Location.Y);
 }
+
+// Major stations only, single interval
+Station[] majors = align.GetStationSet(StationTypes.Major, 100);
+
+// Geometry points only (no interval needed)
+Station[] geoPts = align.GetStationSet(StationTypes.GeometryPoint);
+
+// Custom range with major=50, minor=10
+Station[] ranged = align.GetStationSet(StationTypes.All, 50, 10, 100.0, 500.0);
 ```
 
 ### Point Location from Station
 
 ```csharp
-// Simple version: station + offset -> northing + easting
-double northing, easting;
-align.PointLocation(station, offset, ref northing, ref easting);
+// Simple version: station + offset -> easting + northing
+double easting, northing;
+align.PointLocation(station, offset, ref easting, ref northing);
 
 // With tolerance and bearing
 double bearing;
 align.PointLocation(station, offset, tolerance,
-    ref northing, ref easting, ref bearing);
+    ref easting, ref northing, ref bearing);
 ```
 
-**Tolerance note:** Determines which entity the point is on. A large tolerance may place the point on an earlier entity.
+**Tolerance note:** Determines which entity the point is on. A large tolerance may place the point on an earlier entity. Note parameter order is easting, northing (X, Y).
+
+### Station/Offset from Point (inverse of PointLocation)
+
+```csharp
+// Simple version: easting + northing -> station + offset
+double station, offset;
+align.StationOffset(easting, northing, ref station, ref offset);
+
+// With tolerance
+align.StationOffset(easting, northing, tolerance, ref station, ref offset);
+
+// Accept out-of-range points (beyond alignment start/end)
+bool outOfRange;
+align.StationOffsetAcceptOutOfRange(easting, northing,
+    ref station, ref offset, ref outOfRange);
+
+// With tolerance + out-of-range
+align.StationOffsetAcceptOutOfRange(easting, northing, tolerance,
+    ref station, ref offset, ref outOfRange);
+```
+
+### Instantaneous Radius at Station
+
+```csharp
+// Get the radius at a specific raw station value
+// Returns double.PositiveInfinity for tangent segments
+double radius = align.GetInstantaneousRadius(rawStation);
+```
+
+### Reverse Alignment Direction
+
+```csharp
+// Reverses the direction of the alignment geometry
+align.Reverse();
+```
+
+### Distance to Another Alignment
+
+```csharp
+double distToOther, stationOnOther;
+align.DistanceToAlignment(stationOnThis, otherAlignment,
+    ref distToOther, ref stationOnOther);
+
+// With explicit side
+align.DistanceToAlignment(stationOnThis, otherAlignment,
+    AlignmentSide.Left, ref distToOther, ref stationOnOther);
+```
 
 ## Design Speeds
 
@@ -261,16 +449,73 @@ ObjectIdCollection slgIds = align.GetSampleLineGroupIds();
 
 // Get profiles
 ObjectIdCollection profileIds = align.GetProfileIds();
+
+// Get superelevation views
+ObjectIdCollection seViewIds = align.GetSuperelevationViewIds();
+
+// Get child offset alignments
+ObjectIdCollection offsetIds = align.GetChildOffsetAlignmentIds();
+ObjectIdCollection dynamicOnly = align.GetChildOffsetAlignmentIds(true); // only dynamic-update offsets
+
+// Get label group IDs
+ObjectIdCollection labelGroupIds = align.GetAlignmentLabelGroupIds();
+ObjectIdCollection labelIds = align.GetAlignmentLabelIds();
+
+// Export to polyline
+ObjectId plineId = align.GetPolyline();
+
+// Import a label set
+align.ImportLabelSet("My Label Set");
+align.ImportLabelSet(labelSetStyleId);
+
+// Get station string with equations applied
+string stationStr = align.GetStationStringWithEquations(rawStation);
+
+// Get next unique alignment name
+string uniqueName = Alignment.GetNextUniqueName("MyAlignment");
+```
+
+## Useful Properties
+
+```csharp
+// Alignment geometry range
+double start  = align.StartingStation;
+double end    = align.EndingStation;
+double endEq  = align.EndingStationWithEquations;
+double length = align.Length;
+
+// Reference point (station origin)
+Point2d refPt     = align.ReferencePoint;
+double refStation  = align.ReferencePointStation;
+
+// Site info
+string siteName = align.SiteName;
+bool isSiteless = align.IsSiteless;
+
+// Offset alignment info
+bool isOffset = align.IsOffsetAlignment;
+OffsetAlignmentInfo oaInfo = align.OffsetAlignmentInfo;
+
+// Type and creation mode
+AlignmentType aType = align.AlignmentType;
+AlignmentCreationType cMode = align.CreationMode;
+
+// Cross slope at station (superelevation)
+double slope = align.GetCrossSlopeAtStation(station,
+    SuperelevationCrossSegmentType.InsideLane, true);
 ```
 
 ## Gotchas
 
-- `Create()` fails if the named styles don't exist in the document
+- `Create()` string overload fails if the named styles don't exist in the document
 - Offset alignment does NOT inherit station labels, equations, or design speeds
-- Station equations modify station values - some methods need "raw" stations
+- Station equations modify station values - some methods need "raw" stations (use `GetStationStringWithEquations()` for display)
 - Superelevation curves must be calculated before accessing (manually or via wizard)
 - `GetSlope()` throws `InvalidOperationException` for invalid segment types - catch silently
-- `PointLocation` tolerance affects which entity returns the point
+- `PointLocation` and `StationOffset` parameter order is easting, northing (X, Y), not northing, easting
+- `GetInstantaneousRadius()` requires a raw station value
+- The instance method `CreateOffsetAlignment(double)` is deprecated since Civil 3D 2010; use the static overloads
+- `StationTypes` is a flags enum (plural) - use `StationTypes.All`, not `StationType.All`
 
 ## Related Skills
 
