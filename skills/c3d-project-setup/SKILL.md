@@ -15,36 +15,66 @@ Use this skill when creating a new Civil 3D plugin project or troubleshooting bu
 
 ## Required DLL References
 
-Browse to the Civil 3D install directory and add these base libraries:
+The `acad_path.props` file defines three path variables for the three subdirectory locations where Civil 3D DLLs reside:
 
-| DLL | Purpose |
-|-----|---------|
-| `acdbmgd.dll` | AutoCAD database managed wrapper |
-| `acmgd.dll` | AutoCAD application managed wrapper |
-| `accoremgd.dll` | AutoCAD core managed wrapper |
-| `AecBaseMgd.dll` | AEC base classes |
-| `AeccDbMgd.dll` | Civil 3D database classes |
+| Variable | Resolved Path | DLLs |
+|----------|--------------|------|
+| `$(ArxMgdPath)` | `C:\Program Files\Autodesk\AutoCAD 2026` | `acdbmgd.dll`, `acmgd.dll`, `accoremgd.dll` |
+| `$(OMFMgdPath)` | `C:\Program Files\Autodesk\AutoCAD 2026\ACA` | `AecBaseMgd.dll` |
+| `$(AeccMgdPath)` | `C:\Program Files\Autodesk\AutoCAD 2026\C3D` | `AeccDbMgd.dll` |
+
+| DLL | Variable | Purpose |
+|-----|----------|---------|
+| `acdbmgd.dll` | `$(ArxMgdPath)` | AutoCAD database managed wrapper |
+| `acmgd.dll` | `$(ArxMgdPath)` | AutoCAD application managed wrapper |
+| `accoremgd.dll` | `$(ArxMgdPath)` | AutoCAD core managed wrapper |
+| `AecBaseMgd.dll` | `$(OMFMgdPath)` | AEC base classes |
+| `AeccDbMgd.dll` | `$(AeccMgdPath)` | Civil 3D database classes |
 
 **CRITICAL:** Set `Copy Local` (Private) to **False** for all Autodesk DLLs. These are resolved at runtime by the Civil 3D host process. Setting them to True causes version conflicts and bloated output.
 
-In .csproj:
+In .csproj (full reference block pattern):
 ```xml
 <Reference Include="acdbmgd">
-  <HintPath>$(Civil3DPath)\acdbmgd.dll</HintPath>
+  <SpecificVersion>False</SpecificVersion>
+  <HintPath>$(ArxMgdPath)\acdbmgd.dll</HintPath>
+  <Private>False</Private>
+</Reference>
+<Reference Include="acmgd">
+  <SpecificVersion>False</SpecificVersion>
+  <HintPath>$(ArxMgdPath)\acmgd.dll</HintPath>
+  <Private>False</Private>
+</Reference>
+<Reference Include="accoremgd">
+  <SpecificVersion>False</SpecificVersion>
+  <HintPath>$(ArxMgdPath)\accoremgd.dll</HintPath>
+  <Private>False</Private>
+</Reference>
+<Reference Include="AecBaseMgd">
+  <SpecificVersion>False</SpecificVersion>
+  <HintPath>$(OMFMgdPath)\AecBaseMgd.dll</HintPath>
+  <Private>False</Private>
+</Reference>
+<Reference Include="AeccDbMgd">
+  <SpecificVersion>False</SpecificVersion>
+  <HintPath>$(AeccMgdPath)\AeccDbMgd.dll</HintPath>
   <Private>False</Private>
 </Reference>
 ```
 
 ## Project File Pattern (from this codebase)
 
-The `acad_path.props` file defines the Civil 3D installation path:
+The `acad_path.props` file defines the Civil 3D installation paths:
 ```xml
 <Civil3DPath>C:\Program Files\Autodesk\AutoCAD 2026</Civil3DPath>
+<ArxMgdPath>$(Civil3DPath)</ArxMgdPath>
+<OMFMgdPath>$(Civil3DPath)\ACA</OMFMgdPath>
+<AeccMgdPath>$(Civil3DPath)\C3D</AeccMgdPath>
 ```
 
-Import it in your .csproj:
+Import it in your .csproj (path is relative to your project; projects in `CSharp/<PluginName>/` use two levels up):
 ```xml
-<Import Project="..\acad_path.props" />
+<Import Project="..\..\acad_path.props" />
 ```
 
 ## Required Namespaces
@@ -96,10 +126,12 @@ namespace MyPlugin
 
 ## Debugging Setup
 
-In project Properties > Debug:
+In project Properties > Debug (or `launchSettings.json`):
 1. **Start external program:** `C:\Program Files\Autodesk\AutoCAD 2026\acad.exe`
-2. **Command line arguments:** `/ld "C:\Program Files\Autodesk\AutoCAD 2026\AecBase.dbx" /p "<<C3D_Imperial>>"`
-3. **Working directory:** `C:\Program Files\Autodesk\AutoCAD 2026\UserDataCache\`
+2. **Command line arguments:** `/ld "C:\Program Files\Autodesk Civil 3D 2026\AecBase.dbx" /p "<<C3D_Imperial>>" /nologo`
+3. **Working directory:** `C:\Program Files\Autodesk\AutoCAD 2026\UserDataCache`
+
+Note: `AecBase.dbx` lives under the **Civil 3D** install path (`Autodesk Civil 3D 2026`), not the AutoCAD path (`AutoCAD 2026`). The `acad.exe` itself is in the AutoCAD path.
 
 ## COM Interop (When .NET API is Incomplete)
 
