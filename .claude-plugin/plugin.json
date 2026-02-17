@@ -1,0 +1,19 @@
+{
+  "name": "c3d-api",
+  "version": "1.0.0",
+  "description": "AutoCAD Civil 3D .NET API reference skills for plugin development",
+  "skills": [
+    "skills/autocad-class-reference",
+    "skills/c3d-class-reference",
+    "skills/c3d-project-setup",
+    "skills/c3d-root-objects",
+    "skills/c3d-label-styles",
+    "skills/c3d-surfaces",
+    "skills/c3d-alignments",
+    "skills/c3d-profiles",
+    "skills/c3d-pipe-networks",
+    "skills/c3d-corridors",
+    "skills/c3d-points",
+    "skills/c3d-custom-subassemblies"
+  ]
+}
