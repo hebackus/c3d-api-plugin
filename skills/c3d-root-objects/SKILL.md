@@ -151,7 +151,7 @@ ed.WriteMessage("AlignmentType: {0}",
     cmdSettings.AlignmentTypeOption.AlignmentType.Value);
 ```
 
-**Note:** Feature settings are in domain-specific namespaces (e.g., `Autodesk.Civil.Land.Settings` for alignments). Drawing/ambient settings are in `Autodesk.Civil.Settings`.
+**Note:** Feature and command settings are in `Autodesk.Civil.Settings` — the same namespace as drawing/ambient settings. There is no separate `Autodesk.Civil.Land.Settings` namespace.
 
 ## Property Value Pattern
 
