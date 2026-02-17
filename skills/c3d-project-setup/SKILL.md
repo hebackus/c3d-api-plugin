@@ -30,6 +30,7 @@ The `acad_path.props` file defines three path variables for the three subdirecto
 | `accoremgd.dll` | `$(ArxMgdPath)` | AutoCAD core managed wrapper |
 | `AecBaseMgd.dll` | `$(OMFMgdPath)` | AEC base classes |
 | `AeccDbMgd.dll` | `$(AeccMgdPath)` | Civil 3D database classes |
+| `AeccPressurePipesMgd.dll` | `$(AeccMgdPath)` | Civil 3D pressure pipe network classes |
 
 **CRITICAL:** Set `Copy Local` (Private) to **False** for all Autodesk DLLs. These are resolved at runtime by the Civil 3D host process. Setting them to True causes version conflicts and bloated output.
 
@@ -59,6 +60,11 @@ In .csproj (full reference block pattern):
   <SpecificVersion>False</SpecificVersion>
   <HintPath>$(AeccMgdPath)\AeccDbMgd.dll</HintPath>
   <Private>False</Private>
+</Reference>
+<Reference Include="AeccPressurePipesMgd">
+  <HintPath>$(AeccMgdPath)\AeccPressurePipesMgd.dll</HintPath>
+  <Private>False</Private>
+  <SpecificVersion>False</SpecificVersion>
 </Reference>
 ```
 
@@ -128,10 +134,10 @@ namespace MyPlugin
 
 In project Properties > Debug (or `launchSettings.json`):
 1. **Start external program:** `C:\Program Files\Autodesk\AutoCAD 2026\acad.exe`
-2. **Command line arguments:** `/ld "C:\Program Files\Autodesk Civil 3D 2026\AecBase.dbx" /p "<<C3D_Imperial>>" /nologo`
+2. **Command line arguments:** `/ld "C:\Program Files\Autodesk\AutoCAD 2026\AecBase.dbx" /p "<<C3D_Imperial>>" /nologo`
 3. **Working directory:** `C:\Program Files\Autodesk\AutoCAD 2026\UserDataCache`
 
-Note: `AecBase.dbx` lives under the **Civil 3D** install path (`Autodesk Civil 3D 2026`), not the AutoCAD path (`AutoCAD 2026`). The `acad.exe` itself is in the AutoCAD path.
+Note: Both `acad.exe` and `AecBase.dbx` live under the same AutoCAD install path (`C:\Program Files\Autodesk\AutoCAD 2026`).
 
 ## COM Interop (When .NET API is Incomplete)
 
