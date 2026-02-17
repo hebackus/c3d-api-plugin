@@ -445,7 +445,7 @@ ProfileViewStyle pvStyle = ts.GetObject(pvStyleId, OpenMode.ForWrite)
 Style components:
 - **Axes:** `BottomAxis`, `TopAxis`, `LeftAxis`, `RightAxis` (all `AxisStyle` type)
 - **Graph:** `GraphStyle` - overall graph appearance
-- **Grid lines:** `GetDisplayStylePlan()` for horizontal geometry point grid lines
+- **Grid lines:** `GetDisplayStylePlan(ProfileViewDisplayStyleType type)` — e.g. `GridAtHGP` for horizontal geometry point grid lines, `GridHorizontalMajor`/`GridHorizontalMinor`/`GridVerticalMajor`/`GridVerticalMinor` for regular grid
 
 ### Axis Style Properties
 
