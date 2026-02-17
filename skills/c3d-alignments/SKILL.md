@@ -236,8 +236,8 @@ entities.Clear();
 
 ```csharp
 StationEquation eq = align.StationEquations.Add(
-    80,     // location (distance from start)
-    0,      // new station number basis
+    80,     // rawStationBack: raw station value at the equation point (distance from start)
+    0,      // stationAhead: station value assigned going ahead past the equation
     StationEquationType.Increasing
 );
 ```
@@ -369,11 +369,11 @@ foreach (SuperelevationCurve sec in align.SuperelevationCurves)
             try
             {
                 double slope = sest.GetSlope(
-                    (SuperelevationCrossSegmentType)i, false);
+                    (SuperelevationCrossSegmentType)i);
                 ed.WriteMessage("    Slope: {0}, Segment: {1}\n", slope,
                     Enum.GetName(typeof(SuperelevationCrossSegmentType), i));
             }
-            catch (InvalidOperationException) { } // Invalid segment type
+            catch (InvalidOperationException) { } // Invalid segment type for this station
         }
     }
 }
