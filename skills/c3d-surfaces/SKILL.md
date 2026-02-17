@@ -253,7 +253,7 @@ TinSurface oSurface = surfaceId.GetObject(OpenMode.ForWrite) as TinSurface;
 oSurface.BoundariesDefinition.AddBoundaries(
     new ObjectIdCollection(boundaries),
     100,  // mid-ordinate distance
-    Autodesk.Civil.Land.SurfaceBoundaryType.Outer,
+    Autodesk.Civil.SurfaceBoundaryType.Outer,
     true  // use non-destructive breaklines
 );
 oSurface.Rebuild(); // Must rebuild after adding boundaries
@@ -268,10 +268,10 @@ Adds points and recomputes triangles:
 ```csharp
 oSurface.BreaklinesDefinition.AddStandardBreaklines(
     new ObjectIdCollection(lines),
+    0,    // mid-ordinate distance
     10,   // maximumDistance (supplementing distance)
     5,    // weedingDistance
-    5,    // weedingAngle
-    0     // mid-ordinate distance
+    5     // weedingAngle
 );
 ```
 
@@ -299,13 +299,14 @@ oSurface.BreaklinesDefinition.ImportBreaklinesFromFile("file.flt");
 
 ```csharp
 // From polyline ObjectIdCollection
+// Parameter order: midOrdinateDistance, maximumDistance, weedingDistance, weedingAngle
 oSurface.ContoursDefinition.AddContours(
     new ObjectIdCollection(polylineIds),
-    weedingDistance, weedingAngle, maximumDistance, midOrdinateDistance);
+    midOrdinateDistance, maximumDistance, weedingDistance, weedingAngle);
 
 // Optional: minimize flat areas
 SurfaceMinimizeFlatAreaOptions flatOptions = new SurfaceMinimizeFlatAreaOptions();
-oSurface.ContoursDefinition.AddContours(polyIds, wd, wa, md, mod, flatOptions);
+oSurface.ContoursDefinition.AddContours(polyIds, midOrdDist, maxDist, weedDist, weedAngle, flatOptions);
 ```
 
 ## Extracting Contours and Borders
@@ -475,10 +476,10 @@ oSurface.ExportToDEM(
 oSurface.ExportToDEM(
     @"path\to\output.dem",
     "coordinateSystemCode",
-    gridSpacing: 10.0,
+    10.0,
     ExportDetermineElevationType.Average,
-    useCustomNullElevationation: true,
-    customNullElevation: -9999.0f);
+    true,         // useCustomNullElevation
+    -9999.0f);    // customNullElevation
 ```
 
 ### ExportDetermineElevationType Values
@@ -500,7 +501,7 @@ SurfaceOperationSmooth op = oSurface.SmoothSurfaceByNNI(output);
 KrigingMethodOptions krigingOpts = new KrigingMethodOptions();
 krigingOpts.SemivariogramModel = KrigingSemivariogramType.Spherical;
 krigingOpts.SampleVertices = oSurface.GetVerticesInsidePolylines(...);
-SurfaceOperationSmooth op = oSurface.SmoothSurfaceByKriging(output, krigingOpts);
+SurfaceOperationSmooth op = oSurface.SmoothSurfaceByKriging(krigingOpts, output);
 ```
 
 ### Output Location Types
