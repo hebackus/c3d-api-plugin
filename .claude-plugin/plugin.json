@@ -14,6 +14,14 @@
     "skills/c3d-pipe-networks",
     "skills/c3d-corridors",
     "skills/c3d-points",
-    "skills/c3d-custom-subassemblies"
+    "skills/c3d-custom-subassemblies",
+    "skills/acad-geometry",
+    "skills/acad-mtext",
+    "skills/acad-mleaders",
+    "skills/acad-fields",
+    "skills/acad-dimensions",
+    "skills/acad-tables",
+    "skills/acad-hatches",
+    "skills/acad-blocks"
   ]
 }
