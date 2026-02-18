@@ -314,7 +314,7 @@ AttributeTypeInfoInt attrInfo = new AttributeTypeInfoInt("Int UDP");
 attrInfo.DefaultValue = 15;
 attrInfo.UpperBoundValue = 20;
 attrInfo.LowerBoundValue = 10;
-UDP udp = udpClass.CreateUDP(attrInfo);
+UDPInteger udp = udpClass.CreateUDP(attrInfo);
 
 // Assign classification to point group
 PointGroup pg = pgId.GetObject(OpenMode.ForWrite) as PointGroup;
