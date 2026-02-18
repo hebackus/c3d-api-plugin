@@ -448,8 +448,8 @@ Export styles to another open drawing:
 
 ```csharp
 // Export a single style
-ObjectId styleId = doc.Styles.LabelSetStyles
-    .AlignmentLabelSetStyles.MajorStationLabelStyles[0];
+ObjectId styleId = doc.Styles.LabelStyles
+    .AlignmentLabelStyles.MajorStationLabelStyles[0];
 LabelStyle style = ts.GetObject(styleId, OpenMode.ForRead) as LabelStyle;
 
 Database destDb = null;
