@@ -326,7 +326,7 @@ The SATemplate (SubAssembly Template) pattern is the standard structure for cust
 2. Read current corridor state
 3. Calculate geometry based on parameters and targets
 4. Create points, links, and shapes with appropriate codes
-5. Handle errors with `Utilities.RecordWarning()`
+5. Handle errors with `corridorState.RecordError()` (not exceptions — see Gotchas)
 
 ## Subassembly Class Properties
 
@@ -409,7 +409,7 @@ bool Remove(ObjectId subassemblyId)
 
 Key utility methods:
 - `Utilities.GetSide()` - determine left/right side
-- `Utilities.RecordWarning()` - log corridor processing warnings
+- `Utilities.RecordWarning()` - legacy VBA/Subassembly Composer helper; in .NET use `corridorState.RecordError()` instead
 
 ## Tool Catalog
 
