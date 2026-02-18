@@ -64,7 +64,6 @@ In .csproj (full reference block pattern):
 <Reference Include="AeccPressurePipesMgd">
   <HintPath>$(AeccMgdPath)\AeccPressurePipesMgd.dll</HintPath>
   <Private>False</Private>
-  <SpecificVersion>False</SpecificVersion>
 </Reference>
 ```
 
