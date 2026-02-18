@@ -192,13 +192,23 @@ if (per.Status == PromptStatus.OK)
 
 ## Full Class Index
 
-See `CLASS_INDEX.md` in the `autocad-api-reference` directory for complete listing of all 1,248 types.
+See [`../../autocad-api-reference/CLASS_INDEX.md`](../../autocad-api-reference/CLASS_INDEX.md) for complete listing of all 1,248 types.
 
 ## Related Skills
 
 For Civil 3D-specific classes, use:
 - `/c3d-api:c3d-class-reference` - Civil 3D classes
 - `/c3d-api:c3d-root-objects` - CivilApplication/CivilDocument
+
+For specific AutoCAD entity and API topics, use:
+- `/c3d-api:acad-tables` - Creating and modifying AutoCAD table entities
+- `/c3d-api:acad-geometry` - Working with geometric types (Point3d, Vector3d, curves)
+- `/c3d-api:acad-mtext` - Creating and formatting MText entities
+- `/c3d-api:acad-mleaders` - Creating and configuring MLeader entities
+- `/c3d-api:acad-fields` - Working with AutoCAD field expressions
+- `/c3d-api:acad-dimensions` - Creating dimension entities
+- `/c3d-api:acad-hatches` - Creating hatch pattern fills
+- `/c3d-api:acad-blocks` - Creating and inserting block references
 
 ## Documentation
 
