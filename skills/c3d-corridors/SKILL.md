@@ -643,6 +643,16 @@ corridor.CodeSetStyleId = cssId;
 corridor.CodeSetStyleName = "My Style Set";
 ```
 
+## Gotchas
+
+These are the most common pitfalls when working with corridors in the .NET API:
+
+**Feature line polyline creation requires COM.** The .NET API provides no method to create a corridor feature line from a polyline. Use the COM interface `IAeccLandFeatureLine.AddFromPolyline()` instead. The managed `CorridorFeatureLine` class only supports reading feature lines and exporting them (to polyline, grading feature line, alignment, or profile).
+
+**Cut/fill volume computation requires COM.** `CorridorSurface` exposes no managed method to compute cut/fill volumes between a corridor surface and a reference surface. Use COM API to access volume computation.
+
+**Offset baselines require COM.** There is no managed API method to create offset baselines on a corridor. You can read existing offset baselines via `region.OffsetBaselines` and cast to `OffsetBaseline` or `HardcodedOffsetBaseline`, but creation must go through COM.
+
 ## .NET API Limitations Summary
 
 | Feature | Supported? |
