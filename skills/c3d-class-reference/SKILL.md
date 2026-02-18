@@ -112,11 +112,17 @@ using (Transaction tr = db.TransactionManager.StartTransaction())
 
 ## Full Class Index
 
-See `CLASS_INDEX.md` in the `api-reference` directory for complete listing of all 959 types.
+See [`CLASS_INDEX.md`](../api-reference/CLASS_INDEX.md) for complete listing of all 959 types.
 
-## Cross-References
+## Related Skills
 
-- Use `/c3d-api:c3d-root-objects` for CivilApplication/CivilDocument details
-- Use `/c3d-api:c3d-pipe-networks` for Network/Pipe/Structure details
-- Use `/c3d-api:c3d-alignments` for Alignment API details
-- Use `/c3d-api:c3d-surfaces` for Surface API details
+- `/c3d-api:c3d-project-setup` - Setting up .NET project for Civil 3D development
+- `/c3d-api:c3d-root-objects` - CivilApplication, CivilDocument, settings hierarchy
+- `/c3d-api:c3d-alignments` - Alignment creation, entities, geometry
+- `/c3d-api:c3d-surfaces` - Surface creation, editing, data extraction
+- `/c3d-api:c3d-profiles` - Profile layout, PVIs, profile views
+- `/c3d-api:c3d-pipe-networks` - Gravity and pressure pipe network objects
+- `/c3d-api:c3d-corridors` - Corridor creation, baselines, regions
+- `/c3d-api:c3d-points` - CogoPoint, PointGroup, UDP access
+- `/c3d-api:c3d-label-styles` - LabelStyle, components, hierarchy
+- `/c3d-api:c3d-custom-subassemblies` - Subassembly SDK, CorridorState, geometry callbacks
