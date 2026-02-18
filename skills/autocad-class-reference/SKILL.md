@@ -209,6 +209,7 @@ For specific AutoCAD entity and API topics, use:
 - `/c3d-api:acad-dimensions` - Creating dimension entities
 - `/c3d-api:acad-hatches` - Creating hatch pattern fills
 - `/c3d-api:acad-blocks` - Creating and inserting block references
+- `/c3d-api:acad-sheet-sets` - Reading/writing Sheet Set (.dst) files via COM
 
 ## Documentation
 
