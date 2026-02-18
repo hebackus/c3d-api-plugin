@@ -256,7 +256,6 @@ query.IncludeFullDescriptions = "FLO*";     // Wildcard
 query.IncludeNumbers = ">2200";             // Greater than
 query.ExcludeElevations = "150-155";
 query.ExcludeNames = "BRKL";
-query.UseCaseSensitiveMatch = true;
 
 pg.SetQuery(query);
 pg.Update();  // Apply the query
