@@ -112,7 +112,7 @@ using (Transaction tr = db.TransactionManager.StartTransaction())
 
 ## Full Class Index
 
-See [`CLASS_INDEX.md`](../api-reference/CLASS_INDEX.md) for complete listing of all 959 types.
+See [`CLASS_INDEX.md`](../../api-reference/CLASS_INDEX.md) for complete listing of all 959 types.
 
 ## Related Skills
 
