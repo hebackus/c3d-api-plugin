@@ -29,13 +29,22 @@
 - **Clean** - stripped of implementation details
 - **All API signatures** preserved
 
-### 4. **Claude Skill**
-📍 **Access:** `/autocad-class-reference` in Claude Code
+### 4. **Claude Skills**
+📍 **Access:** Use `/c3d-api:skill-name` in Claude Code
 
-**NEW Skill:**
-- Quick class lookups for all 1,248 AutoCAD types
-- Common patterns and examples
-- Entity creation, database access, user input
+**Class Reference:**
+- `/c3d-api:autocad-class-reference` - Quick class lookup (1,248 types / 28 namespaces)
+
+**Topic Skills (9):**
+- `/c3d-api:acad-blocks` - Block definitions, references, attributes, dynamic blocks
+- `/c3d-api:acad-dimensions` - Aligned, rotated, arc, radial, angular, ordinate dimensions
+- `/c3d-api:acad-fields` - Dynamic field text, field codes, embedding in MText/attributes
+- `/c3d-api:acad-geometry` - Points, vectors, matrices, lines, arcs, planes, intersections
+- `/c3d-api:acad-hatches` - Hatch patterns, boundary loops, gradient fills, associativity
+- `/c3d-api:acad-mleaders` - Multileaders, leader lines, MText/Block content, MLeaderStyle
+- `/c3d-api:acad-mtext` - MText and DBText creation, formatting codes, columns, text styles
+- `/c3d-api:acad-sheet-sets` - Sheet set (.dst) files, sheets, subsets, custom properties
+- `/c3d-api:acad-tables` - Tables, cell content, formatting, merging, table styles
 
 ## Key Namespaces
 

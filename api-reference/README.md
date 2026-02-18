@@ -28,23 +28,38 @@
 - **Clean** - stripped of implementation details
 - **All API signatures** preserved
 
-### 4. **Claude Skills** (11 skills total)
+### 4. **Claude Skills** (22 skills total)
 📍 **Access:** Use `/c3d-api:skill-name` in Claude Code
 
-**NEW Skill:**
-- `/c3d-api:c3d-class-reference` - Quick class lookups (959 classes)
+**AutoCAD Skills (10):**
+- `/c3d-api:acad-blocks` - Block definitions, references, attributes, dynamic blocks
+- `/c3d-api:acad-dimensions` - Aligned, rotated, arc, radial, angular, ordinate dimensions
+- `/c3d-api:acad-fields` - Dynamic field text, field codes, embedding in MText/attributes
+- `/c3d-api:acad-geometry` - Points, vectors, matrices, lines, arcs, planes, intersections
+- `/c3d-api:acad-hatches` - Hatch patterns, boundary loops, gradient fills, associativity
+- `/c3d-api:acad-mleaders` - Multileaders, leader lines, MText/Block content, MLeaderStyle
+- `/c3d-api:acad-mtext` - MText and DBText creation, formatting codes, columns, text styles
+- `/c3d-api:acad-sheet-sets` - Sheet set (.dst) files, sheets, subsets, custom properties
+- `/c3d-api:acad-tables` - Tables, cell content, formatting, merging, table styles
+- `/c3d-api:autocad-class-reference` - Quick class lookup (1,248 types / 28 namespaces)
 
-**Existing Skills** (enhanced with 2026 data):
-- `/c3d-api:c3d-project-setup` - Project configuration
-- `/c3d-api:c3d-root-objects` - CivilApplication/Document
-- `/c3d-api:c3d-label-styles` - Label styling
-- `/c3d-api:c3d-surfaces` - Surface operations
-- `/c3d-api:c3d-alignments` - Alignment API
-- `/c3d-api:c3d-profiles` - Profile views
-- `/c3d-api:c3d-pipe-networks` - Pipe networks
-- `/c3d-api:c3d-corridors` - Corridor modeling
-- `/c3d-api:c3d-points` - COGO points
-- `/c3d-api:c3d-custom-subassemblies` - Subassembly design
+**Civil 3D Skills (10):**
+- `/c3d-api:c3d-alignments` - Alignment creation, entities, stations, design speeds, styles
+- `/c3d-api:c3d-corridors` - Corridors, baselines, assemblies, subassemblies, feature lines
+- `/c3d-api:c3d-custom-subassemblies` - Custom subassembly design, CorridorState, SATemplate
+- `/c3d-api:c3d-label-styles` - Label style creation, components, property fields, draw order
+- `/c3d-api:c3d-pipe-networks` - Gravity and pressure pipe networks, labels, styles, interference
+- `/c3d-api:c3d-points` - COGO points, point groups, UDPs, point styles, description keys
+- `/c3d-api:c3d-profiles` - Profile creation, profile views, PVIs, band sets, styles
+- `/c3d-api:c3d-root-objects` - CivilApplication/Document, transactions, settings hierarchy
+- `/c3d-api:c3d-sample-lines` - Sample lines, section views, section network discovery
+- `/c3d-api:c3d-surfaces` - TIN/Grid/Volume surfaces, breaklines, contours, boundaries
+
+**Setup (1):**
+- `/c3d-api:c3d-project-setup` - Project config, references, namespaces, debugging
+
+**Reference (1):**
+- `/c3d-api:c3d-class-reference` - Quick class lookup (959 types / 19 namespaces)
 
 ## How to Use
 
@@ -78,7 +93,7 @@
 - **Namespaces:** 19
 - **C# Files:** 2,972
 - **HTML Pages:** Generated for all types
-- **Skills:** 11 (10 domain-specific + 1 quick-reference)
+- **Skills:** 22 (10 AutoCAD + 10 Civil 3D + 1 setup + 1 reference)
 
 ## Cross-References
 

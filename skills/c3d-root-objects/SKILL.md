@@ -16,7 +16,8 @@ CivilApplication
         ├── GetSitelessAlignmentIds()
         ├── GetSiteIds()
         ├── GetSurfaceIds()
-        ├── GetPipeNetworkIds()
+        ├── GetPipeNetworkIds()          ← gravity networks
+        ├── GetPressurePipeNetworkIds()  ← pressure networks
         ├── CorridorCollection
         ├── CogoPoints
         ├── PointGroups
@@ -205,3 +206,5 @@ using CivSurface = Autodesk.Civil.DatabaseServices.Surface;
 
 - `c3d-project-setup` - Project configuration and references
 - `c3d-label-styles` - Label style creation and components
+- `c3d-pipe-networks` - Gravity and pressure pipe networks (accessed via GetPipeNetworkIds / GetPressurePipeNetworkIds)
+- `c3d-sample-lines` - Sample line groups and section views (accessed via alignment)

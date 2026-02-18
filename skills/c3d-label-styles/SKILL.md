@@ -11,6 +11,47 @@ Use this skill when creating, modifying, or querying label styles for any Civil 
 
 All Civil 3D annotations are governed by `LabelStyle` objects. A label style can include text labels, tick marks, lines, markers, direction arrows, reference text, and text-for-each components. Label styles support parent-child hierarchies where child styles inherit from their parent.
 
+## Pipe and Pressure Network Label Style Navigation
+
+Gravity and pressure networks each have their own label style trees. Access them from `doc.Styles.LabelStyles`:
+
+```csharp
+var labelStylesRoot = doc.Styles.LabelStyles;
+
+// ── Gravity pipe label styles ──────────────────────────────────────────────
+var pipeLabelStyles = labelStylesRoot.PipeLabelStyles;
+var planProfileStyles  = pipeLabelStyles.PlanProfileLabelStyles;   // plan + profile labels
+var crossSectionStyles = pipeLabelStyles.CrossSectionLabelStyles;  // cross-section labels
+
+// Gravity structure label styles (flat collection)
+var structLabelStyles = labelStylesRoot.StructureLabelStyles;
+foreach (ObjectId styleId in structLabelStyles.LabelStyles)
+{
+    LabelStyle style = tr.GetObject(styleId, OpenMode.ForRead) as LabelStyle;
+}
+
+// ── Pressure network label styles ─────────────────────────────────────────
+var pressurePipeStyles = labelStylesRoot.GetPressurePipeLabelStyles();
+var pressPlanProfile    = pressurePipeStyles.PlanProfileLabelStyles;   // plan + profile
+var pressCrossSection   = pressurePipeStyles.CrossingSectionLabelStyles; // section
+
+var pressureFittingStyles = labelStylesRoot.GetPressureFittingLabelStyles();
+foreach (ObjectId styleId in pressureFittingStyles.LabelStyles) { /* ... */ }
+
+var pressureAppurtenanceStyles = labelStylesRoot.GetPressureAppurtenanceLabelStyles();
+foreach (ObjectId styleId in pressureAppurtenanceStyles.LabelStyles) { /* ... */ }
+```
+
+### Label Class Hierarchy
+
+| Network Type | Part Type | Label Class | Section Label Class |
+|---|---|---|---|
+| Gravity | Pipe | `PipeLabel` | `PipeSectionLabel` |
+| Gravity | Structure | `StructureLabel` | `StructureSectionLabel` |
+| Pressure | Pipe | `PressurePipeLabel` | `PressurePipeSectionLabel` |
+| Pressure | Fitting | `PressureFittingLabel` | `PressureFittingSectionLabel` |
+| Pressure | Appurtenance | `PressureAppurtenanceLabel` | `PressureAppurtenanceSectionLabel` |
+
 ## Creating a Label Style
 
 ```csharp
@@ -19,12 +60,6 @@ CivilDocument doc = CivilApplication.ActiveDocument;
 // Point label style
 ObjectId labelStyleId = doc.Styles.LabelStyles
     .PointLabelStyles.LabelStyles.Add("NewPointLabelStyle");
-
-// Alignment label styles are in LabelSetStyles
-// Pipe label styles
-// doc.Styles.LabelStyles.PipeLabelStyles  (LabelStylesPipeRoot)
-// Structure label styles
-// doc.Styles.LabelStyles.StructureLabelStyles (LabelStylesStructureRoot)
 
 // Copy an existing style as a sibling (same parent)
 LabelStyle existing = ts.GetObject(existingStyleId, OpenMode.ForRead) as LabelStyle;
@@ -507,6 +542,7 @@ The `LabelFilterHelper` class in `SharedTypes.cs` filters label styles by:
 ## Related Skills
 
 - `c3d-root-objects` - Accessing styles through CivilDocument
-- `c3d-pipe-networks` - Pipe and structure label styles
+- `c3d-pipe-networks` - Pipe and pressure network label creation (uses styles from this skill)
+- `c3d-sample-lines` - Section view label creation (PipeSectionLabel, PressurePipeSectionLabel, etc.)
 - `c3d-alignments` - Alignment label set styles
 - `c3d-points` - Point label styles and description keys

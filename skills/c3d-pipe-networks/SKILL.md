@@ -11,12 +11,23 @@ Use this skill when working with gravity or pressure pipe networks - creating ne
 
 ```csharp
 CivilDocument doc = CivilApplication.ActiveDocument;
-ObjectIdCollection networkIds = doc.GetPipeNetworkIds();
 
+// Gravity networks
+ObjectIdCollection networkIds = doc.GetPipeNetworkIds();
 foreach (ObjectId netId in networkIds)
 {
     Network network = ts.GetObject(netId, OpenMode.ForRead) as Network;
     ed.WriteMessage("Network: {0}\n", network.Name);
+}
+
+// Pressure networks — separate method, separate type
+ObjectIdCollection pressureNetworkIds = doc.GetPressurePipeNetworkIds();
+foreach (ObjectId netId in pressureNetworkIds)
+{
+    PressurePipeNetwork pressNet = ts.GetObject(netId, OpenMode.ForRead) as PressurePipeNetwork;
+    ObjectIdCollection pipeIds   = pressNet.GetPipeIds();
+    ObjectIdCollection fittingIds = pressNet.GetFittingIds();
+    ObjectIdCollection appurtIds  = pressNet.GetAppurtenanceIds();
 }
 ```
 
@@ -270,6 +281,125 @@ ObjectIdCollection pipeLabels = pipe.GetPipeLabelIds();
 ObjectIdCollection structLabels = structure.GetAvailableStructureLabelIds();
 ```
 
+## Pressure Network Labels
+
+Pressure label classes have different signatures from gravity labels. Note argument order differences:
+
+```csharp
+// ── Plan/profile labels ────────────────────────────────────────────────────
+// Pipe: ratio before styleId
+ObjectId pipeLabelId = PressurePipeLabel.Create(pipeId, 0.5 /* ratio */, pipeStyleId);
+
+// Fitting and appurtenance: styleId first, then ratio + direction vector
+ObjectId fittingLabelId = PressureFittingLabel.Create(
+    fittingId, fittingStyleId, 0.5 /* ratio */, new Vector3d(1, 0, 0));
+
+ObjectId appurtLabelId = PressureAppurtenanceLabel.Create(
+    appurtId, appurtStyleId, 0.5 /* ratio */, new Vector3d(1, 0, 0));
+
+// ── Section labels ─────────────────────────────────────────────────────────
+ObjectId pipeSectLabelId = PressurePipeSectionLabel.Create(
+    sectionViewId, pipeId, sectionNetworkId,
+    0 /* partIndex */, 0.5, new Vector3d(1, 0, 0),
+    labelStyleId, (DimensionAnchorOptionType)0, 0.0);
+
+ObjectId fittingSectLabelId = PressureFittingSectionLabel.Create(
+    sectionViewId, fittingId, sectionNetworkId,
+    0, 0.5, new Vector3d(1, 0, 0),
+    labelStyleId, (DimensionAnchorOptionType)0, 0.0);
+
+ObjectId appurtSectLabelId = PressureAppurtenanceSectionLabel.Create(
+    sectionViewId, appurtId, sectionNetworkId,
+    0, 0.5, new Vector3d(1, 0, 0),
+    labelStyleId, (DimensionAnchorOptionType)0, 0.0);
+```
+
+## Detecting Existing Pressure Labels
+
+```csharp
+// Plan/profile label detection — takes the part id only
+ObjectIdCollection existingPipe  = PressurePipeLabel.GetAvailableLabelIds(pipeId);
+ObjectIdCollection existingFit   = PressureFittingLabel.GetAvailableLabelIds(fittingId);
+ObjectIdCollection existingApp   = PressureAppurtenanceLabel.GetAvailableLabelIds(appurtId);
+
+// Section label detection — takes sectionViewId + partId + sectionNetworkId
+ObjectIdCollection existingPipeSect = PressurePipeSectionLabel.GetAvailableLabelIds(
+    sectionViewId, pipeId, sectionNetworkId);
+ObjectIdCollection existingFitSect  = PressureFittingSectionLabel.GetAvailableLabelIds(
+    sectionViewId, fittingId, sectionNetworkId);
+ObjectIdCollection existingAppSect  = PressureAppurtenanceSectionLabel.GetAvailableLabelIds(
+    sectionViewId, appurtId, sectionNetworkId);
+// If the part is not in the section, GetAvailableLabelIds throws — wrap in try/catch
+```
+
+## Profile View Part Discovery
+
+Gravity and pressure networks use different APIs to discover which parts are drawn in a profile view:
+
+### Gravity (reflection fallback required)
+
+```csharp
+// Primary: typed override collections (version-dependent property names)
+PipeOverrideCollection pipeOverrides = profileView.PipeOverrides;
+foreach (PipeOverride o in pipeOverrides)
+{
+    ObjectId pipeId = o.PipeId; // direct property on PipeOverride
+    Pipe pipe = tr.GetObject(pipeId, OpenMode.ForRead) as Pipe;
+    networkIds.Add(pipe.NetworkId);
+}
+
+StructureOverrideCollection structOverrides = profileView.StructureOverrides;
+foreach (StructureOverride o in structOverrides)
+{
+    // Property name varies by C3D version — use reflection with fallback names
+    ObjectId structId = GetObjectIdProperty(o, "StructId", "StructureId", "PartId", "FeatureId", "SourceId");
+}
+
+// Fallback: GraphOverrides (untyped) — also needs reflection
+System.Collections.IEnumerable graphOverrides = profileView.GraphOverrides;
+foreach (object o in graphOverrides)
+{
+    ObjectId partId = GetObjectIdProperty(o, "PipeId", "StructId", "StructureId", "PartId", "FeatureId", "SourceId");
+}
+
+// Reflection helper
+ObjectId GetObjectIdProperty(object source, params string[] names)
+{
+    var type = source.GetType();
+    foreach (var name in names)
+    {
+        var prop = type.GetProperty(name);
+        if (prop?.PropertyType == typeof(ObjectId))
+            return (ObjectId)prop.GetValue(source, null);
+    }
+    return ObjectId.Null;
+}
+```
+
+### Pressure (clean API, no reflection needed)
+
+```csharp
+// GetPressureNetworkPartsInGraph returns ObjectIds of ProfileViewPressurePart wrappers
+ObjectIdCollection partsInGraph = profileView.GetPressureNetworkPartsInGraph();
+
+foreach (ObjectId profilePartId in partsInGraph)
+{
+    ProfileViewPressurePart profilePart =
+        tr.GetObject(profilePartId, OpenMode.ForRead, false, true) as ProfileViewPressurePart;
+    if (profilePart == null) continue;
+
+    // .ModelPartId links back to the actual PressurePipe/Fitting/Appurtenance
+    Entity modelPart = tr.GetObject(profilePart.ModelPartId, OpenMode.ForRead) as Entity;
+
+    if (modelPart is PressurePipe pp)
+        networkIds.Add(pp.NetworkId);
+    else if (modelPart is PressureFitting pf)
+        networkIds.Add(pf.NetworkId);
+    else if (modelPart is PressureAppurtenance pa)
+        networkIds.Add(pa.NetworkId);
+}
+```
+
 ## Interference Checks
 
 Interference check styles control the display of intersections:
@@ -390,7 +520,8 @@ The `LabelFilterHelper` in `SharedTypes.cs` maps parts list prefixes to label st
 
 ## Related Skills
 
-- `c3d-root-objects` - Accessing networks through CivilDocument
-- `c3d-label-styles` - General label style creation
-- `c3d-profiles` - Profile views where pipe labels are placed
+- `c3d-root-objects` - Accessing networks through CivilDocument (GetPipeNetworkIds / GetPressurePipeNetworkIds)
+- `c3d-label-styles` - Pipe/pressure label style navigation and class hierarchy table
+- `c3d-profiles` - Profile views where pipe profile labels are placed
+- `c3d-sample-lines` - Sample line groups and section views where pipe section labels are placed
 - `c3d-corridors` - Corridor-pipe interactions
