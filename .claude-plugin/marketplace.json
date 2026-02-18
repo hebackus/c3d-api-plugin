@@ -1,0 +1,13 @@
+{
+  "name": "c3d-api-plugin",
+  "owner": {
+    "name": "hebackus"
+  },
+  "plugins": [
+    {
+      "name": "c3d-api",
+      "source": ".",
+      "description": "AutoCAD Civil 3D .NET API reference skills for plugin development"
+    }
+  ]
+}
