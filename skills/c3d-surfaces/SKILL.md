@@ -469,7 +469,7 @@ SurfaceOperationCollection ops = oSurface.Operations;
 oSurface.ExportToDEM(
     @"path\to\output.dem",
     "coordinateSystemCode",
-    gridSpacing: 10.0,
+    10.0,    // gridSpacing
     ExportDetermineElevationType.SampleSurfaceAtGridPoint);
 
 // With custom null elevation
