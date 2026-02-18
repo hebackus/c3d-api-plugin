@@ -280,7 +280,6 @@ foreach (BaseBaseline ob in region.OffsetBaselines)
 }
 ```
 
-**Limitation:** Cannot create offset baselines via .NET API.
 
 ## Assemblies
 
@@ -450,8 +449,6 @@ foreach (BaselineFeatureLines bfl in baseline.OffsetBaselineFeatureLinesCol)
 
 Offset baselines also have `RelatedOffsetBaselineFeatureLines` for direct access.
 
-**Limitation:** Creating feature lines from polylines is NOT supported in .NET. Use COM `IAeccLandFeatureLine.AddFromPolyline()`.
-
 ## Corridor Surfaces
 
 ### Reading Corridor Surfaces
@@ -593,8 +590,6 @@ masks.Remove("Median Mask");
 masks.RemoveAt(0);
 ```
 
-**Limitation:** Cut/fill computation is NOT exposed in .NET - use COM API.
-
 ## Styles
 
 ### Assembly Style
@@ -675,7 +670,7 @@ These are the most common pitfalls when working with corridors in the .NET API:
 | Export solids | Yes |
 | Get/set targets | Yes |
 | Set CodeSetStyle on corridor | Yes |
-| Create offset baselines | No |
+| Create offset baselines | No (use COM) |
 | Compute cut/fill | No (use COM) |
 | Create/modify styles | Yes |
 
