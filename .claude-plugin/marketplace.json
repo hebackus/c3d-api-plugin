@@ -6,7 +6,10 @@
   "plugins": [
     {
       "name": "c3d-api",
-      "source": ".",
+      "source": {
+        "source": "github",
+        "repo": "hebackus/c3d-api-plugin"
+      },
       "description": "AutoCAD Civil 3D .NET API reference skills for plugin development"
     }
   ]
