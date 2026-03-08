@@ -525,3 +525,6 @@ double slope = align.GetCrossSlopeAtStation(station,
 - `c3d-profiles` - Profiles along alignments
 - `c3d-label-styles` - General label style creation
 - `c3d-corridors` - Corridors use alignments as baselines
+- `acad-editor-input` - Selecting alignments with GetEntity and AddAllowedClass
+- `c3d-superelevation` - Detailed superelevation data access, critical stations, and cross slopes
+- `c3d-intersections` - Intersection objects at alignment crossings

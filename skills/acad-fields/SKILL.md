@@ -175,3 +175,9 @@ SkipFilingResult=1
 - Nested fields (fields within field codes) use `%<\\_ObjId>%` syntax for object references
 - `GetFieldCode()` without flags returns the raw field code; use `FieldCodeFlags.EvaluatedText` to get the current display value
 - The `\\f` format specifier in field codes uses AutoCAD format strings, not .NET format strings
+
+## Related Skills
+
+- `acad-mtext` — embedding fields in MText content
+- `acad-tables` — field content in table cells
+- `acad-blocks` — embedding fields in attribute definitions

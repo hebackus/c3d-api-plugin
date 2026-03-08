@@ -273,3 +273,10 @@ TopLeft=1, TopCenter=2, TopRight=3, MiddleLeft=4, MiddleCenter=5, MiddleRight=6,
 - `ActualWidth`/`ActualHeight` are only valid after the MText has been added to the database
 - MText formatting codes use curly braces `{}` for scope - mismatched braces corrupt the text
 - `TextStyleId` must reference an existing `TextStyleTableRecord` - use `db.Textstyle` for the current style
+
+## Related Skills
+
+- `acad-fields` — embedding dynamic fields in MText content
+- `acad-mleaders` — MText as MLeader text content
+- `acad-dimensions` — MText formatting in dimension text overrides
+- `acad-tables` — MText content in table cells

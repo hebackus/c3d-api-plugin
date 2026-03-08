@@ -210,6 +210,9 @@ For specific AutoCAD entity and API topics, use:
 - `/c3d-api:acad-hatches` - Creating hatch pattern fills
 - `/c3d-api:acad-blocks` - Creating and inserting block references
 - `/c3d-api:acad-sheet-sets` - Reading/writing Sheet Set (.dst) files via COM
+- `/c3d-api:acad-layers` - Layer table, layer records, properties, and states
+- `/c3d-api:acad-editor-input` - Editor prompts, selection sets, and filters
+- `/c3d-api:acad-polylines` - Polyline, Polyline2d, Polyline3d entity details
 
 ## Documentation
 

@@ -525,3 +525,4 @@ The `LabelFilterHelper` in `SharedTypes.cs` maps parts list prefixes to label st
 - `c3d-profiles` - Profile views where pipe profile labels are placed
 - `c3d-sample-lines` - Sample line groups and section views where pipe section labels are placed
 - `c3d-corridors` - Corridor-pipe interactions
+- `c3d-pressure-networks` - Dedicated pressure network skill with detailed fitting, appurtenance, and pressure parts list coverage

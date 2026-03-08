@@ -553,3 +553,5 @@ oSurface.RemoveSnapshot();      // Removes snapshot
 - `c3d-root-objects` - Accessing surfaces through CivilDocument
 - `c3d-profiles` - Surface profiles along alignments
 - `c3d-corridors` - Corridor surfaces
+- `c3d-catchments` — Catchment areas derived from surface drainage analysis
+- `c3d-grading` — Grading groups that create and modify surfaces

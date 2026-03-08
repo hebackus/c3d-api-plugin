@@ -375,3 +375,9 @@ using (Transaction tr = db.TransactionManager.StartTransaction())
 - `MLeaderStyle` must be posted to the database with `PostMLeaderStyleToDb()` before it can be assigned to an MLeader
 - `MoveType.MoveAllExceptArrowHeaderPoints` keeps arrow tips fixed while moving content - useful for repositioning text without changing what the leader points to
 - `TextAttachmentType` and direction interact: horizontal leaders use top/middle/bottom attachment; vertical leaders use center/lined attachment
+
+## Related Skills
+
+- `acad-mtext` — MText as MLeader text content
+- `acad-blocks` — block references as MLeader block content
+- `acad-geometry` — Point3d for leader vertices and attachment points

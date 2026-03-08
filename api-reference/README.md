@@ -28,7 +28,7 @@
 - **Clean** - stripped of implementation details
 - **All API signatures** preserved
 
-### 4. **Claude Skills** (22 skills total)
+### 4. **Claude Skills** (23 skills total)
 📍 **Access:** Use `/c3d-api:skill-name` in Claude Code
 
 **AutoCAD Skills (10):**
@@ -43,10 +43,11 @@
 - `/c3d-api:acad-tables` - Tables, cell content, formatting, merging, table styles
 - `/c3d-api:autocad-class-reference` - Quick class lookup (1,248 types / 28 namespaces)
 
-**Civil 3D Skills (10):**
+**Civil 3D Skills (11):**
 - `/c3d-api:c3d-alignments` - Alignment creation, entities, stations, design speeds, styles
 - `/c3d-api:c3d-corridors` - Corridors, baselines, assemblies, subassemblies, feature lines
 - `/c3d-api:c3d-custom-subassemblies` - Custom subassembly design, CorridorState, SATemplate
+- `/c3d-api:c3d-featurelines` - Feature lines (grading and corridor), creation, elevation management, export
 - `/c3d-api:c3d-label-styles` - Label style creation, components, property fields, draw order
 - `/c3d-api:c3d-pipe-networks` - Gravity and pressure pipe networks, labels, styles, interference
 - `/c3d-api:c3d-points` - COGO points, point groups, UDPs, point styles, description keys
@@ -93,7 +94,7 @@
 - **Namespaces:** 19
 - **C# Files:** 2,972
 - **HTML Pages:** Generated for all types
-- **Skills:** 22 (10 AutoCAD + 10 Civil 3D + 1 setup + 1 reference)
+- **Skills:** 23 (10 AutoCAD + 11 Civil 3D + 1 setup + 1 reference)
 
 ## Cross-References
 

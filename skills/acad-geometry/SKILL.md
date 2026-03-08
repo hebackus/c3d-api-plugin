@@ -375,3 +375,7 @@ bool IsPointOnCurve(Curve3d curve, Point3d pt)
 - 2D Polyline vertices are stored in **OCS** (Object Coordinate System), not WCS. Use `Matrix3d.WorldToPlane(polyline.Normal)` to convert WCS points to OCS before comparing or inserting vertices
 - `Extents2d` and `Extents3d` are in `Autodesk.AutoCAD.DatabaseServices`, not `Autodesk.AutoCAD.Geometry` - add the correct using directive
 - Tolerance overloads exist for almost every comparison method - use them when default global tolerance is too tight or too loose
+
+## Related Skills
+
+- `acad-polylines` — polyline vertices, bulge arcs, and OCS vertex coordinate conversion

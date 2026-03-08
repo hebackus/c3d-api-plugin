@@ -530,3 +530,5 @@ string enumVal = pt.GetUDPValue(udpEnumeration);
 - `c3d-label-styles` - Point label style creation
 - `c3d-surfaces` - Points as surface data
 - `c3d-root-objects` - Accessing point collections
+- `acad-editor-input` - Selection sets for COGO point operations
+- `c3d-survey` — Survey points imported as COGO points

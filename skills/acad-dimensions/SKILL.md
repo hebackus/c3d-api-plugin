@@ -286,3 +286,9 @@ dim.DimensionStyle = styleId;
 - Ordinate dimensions: `UsingXAxis = true` measures X coordinates, `UsingXAxis = false` measures Y coordinates
 - `GetDimstyleData()` returns a **temporary** `DimStyleTableRecord` not owned by the database — call `Dispose()` on it after use to avoid memory leaks: `using (var tmp = dim.GetDimstyleData()) { ... }`
 - `DimStyleTableRecord.CopyFrom(sourceDstr)` copies all dim variable values but **overwrites the `Name` property** — reassign `dstr.Name` immediately after calling `CopyFrom()`
+
+## Related Skills
+
+- `acad-geometry` — Point3d coordinates for dimension definition points
+- `acad-mtext` — MText formatting in dimension text overrides
+- `acad-layers` — layer assignment for dimension entities

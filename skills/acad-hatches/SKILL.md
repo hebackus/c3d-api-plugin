@@ -252,3 +252,8 @@ gradient.EvaluateHatch(true);
 - `PatternName` and `PatternType` are read-only - use `SetHatchPattern()` to change them
 - After changing `PatternScale`, `PatternAngle`, or `PatternSpace`, you **must re-call `SetHatchPattern(type, name)`** before calling `EvaluateHatch()` — otherwise the change has no visual effect
 - BulgeVertex `Bulge` value: 0 = straight segment, positive = counterclockwise arc, negative = clockwise arc; `tan(includedAngle/4)`
+
+## Related Skills
+
+- `acad-polylines` — polylines as hatch boundaries; vertex+bulge loop construction
+- `acad-layers` — layer assignment for hatch entities

@@ -518,3 +518,10 @@ string styleName = table.TableStyleName;
 - **Block content in cells:** set `IsAutoScale = true` to fit the block to the cell, or set `Scale` manually. The `BlockTableRecordId` must reference a valid block definition.
 - **Table styles use `int rowTypes` as a bitmask** cast from `RowType` (TitleRow=1, HeaderRow=2, DataRow=4). Combine with bitwise OR for multiple row types.
 - **Cell style names** are strings: `"_TITLE"`, `"_HEADER"`, `"_DATA"` are the built-in names. Custom cell styles can be added to a `TableStyle`.
+
+## Related Skills
+
+- `acad-fields` — field content in table cells
+- `acad-mtext` — MText formatting in cell text
+- `acad-blocks` — block references as cell content
+- `acad-layers` — layer assignment for table entities

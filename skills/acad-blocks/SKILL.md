@@ -309,3 +309,9 @@ if (blockRef.IsDynamicBlock)
 - `ConvertToStaticBlock()` on a dynamic block reference permanently freezes the current state - the reference can no longer access dynamic properties
 - Dynamic block property `Value` is typed as `object` - cast to the appropriate type (double, string, Point3d, etc.) based on `PropertyTypeCode`
 - `GetBlockReferenceIds(true, false)` returns only direct references; use `(false, true)` to include nested references and force validity checks
+
+## Related Skills
+
+- `acad-layers` — block references and entities within blocks inherit layer properties
+- `acad-editor-input` — selecting block references with GetEntity or selection filters (DxfCode.Start `"INSERT"`)
+- `acad-mleaders` — block references as MLeader block content
