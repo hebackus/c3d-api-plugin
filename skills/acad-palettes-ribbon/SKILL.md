@@ -524,6 +524,7 @@ public class MyPlugin : IExtensionApplication
 
 ## Related Skills
 
+- `acad-palettes` -- deep PaletteSet API reference, Tool Palette API, Properties Palette, lifecycle and zero-document state
 - `acad-events-overrules` -- IExtensionApplication lifecycle for registering palettes and ribbon at startup
 - `acad-editor-input` -- command execution via `SendStringToExecute` triggered by ribbon buttons
 - `acad-blocks` -- tool palette block content and block insertion commands from ribbon
