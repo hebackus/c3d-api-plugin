@@ -85,19 +85,6 @@ if (layoutDict.Contains("Sheet 1"))
 }
 ```
 
-## Layout Properties
-
-- `LayoutName` (string, get/set) — display name on the tab
-- `TabOrder` (int, get/set) — position in the tab bar (0 = Model)
-- `TabSelected` (bool, get/set) — whether this tab is active
-- `BlockTableRecordId` (ObjectId, get-only) — associated paper space BTR
-- `ModelType` (bool, get-only) — true for the Model tab, false for paper space
-- `PlotPaperSize` (Point2d, get-only) — current paper dimensions
-- `PlotOrigin` (Point2d, get-only) — plot origin offset
-- `PlotRotation` (PlotRotation, get-only) — plot rotation angle
-- `Extents` (Extents3d) — layout extents
-- `Limits` (Point2d Min/Max) — limits of the layout
-
 ## Creating Layouts
 
 ### Create a New Layout
@@ -199,31 +186,6 @@ foreach (ObjectId vpId in vpIds)
     // Process user-created viewports
 }
 ```
-
-## Viewport Properties
-
-- `CenterPoint` (Point3d, get/set) — center in paper space coordinates
-- `Width` (double, get/set) — viewport width in paper space units
-- `Height` (double, get/set) — viewport height in paper space units
-- `ViewCenter` (Point2d, get/set) — model space center point displayed
-- `ViewTarget` (Point3d, get/set) — model space target point
-- `ViewHeight` (double, get/set) — visible model space height (controls zoom)
-- `ViewDirection` (Vector3d, get/set) — view direction vector
-- `TwistAngle` (double, get/set) — rotation of the view in radians
-- `CustomScale` (double, get/set) — viewport scale (paper/model ratio)
-- `StandardScale` (StandardScaleType, get/set) — predefined scale enum
-- `On` (bool, get/set) — viewport is active and displays model space
-- `Locked` (bool, get/set) — prevent interactive zoom/pan
-- `Number` (int, get-only) — viewport number (1 = overall paper viewport)
-- `UcsPerViewport` (bool, get/set) — save UCS per viewport
-- `ShadePlot` (ShadePlotType, get/set) — visual style for plotting
-- `VisualStyleId` (ObjectId, get/set) — visual style applied in viewport
-- `EffectivePlotStyleSheet` (string, get-only) — resolved plot style sheet
-- `NonRectClipEntityId` (ObjectId, get/set) — clipping boundary entity
-- `NonRectClipOn` (bool, get/set) — enable non-rectangular clipping
-- `GridOn` (bool, get/set) — grid visibility in viewport
-- `UcsIconVisible` (bool, get/set) — UCS icon visibility
-- `Layer` (string, get/set) — layer of the viewport boundary entity
 
 ### Standard Scale Types
 
@@ -433,28 +395,6 @@ using (Transaction tr = db.TransactionManager.StartTransaction())
     tr.Commit();
 }
 ```
-
-### PlotSettings Properties (inherited by Layout)
-
-- `PlotConfigurationName` (string, get-only) — plotter/device name
-- `CanonicalMediaName` (string, get-only) — paper size canonical name
-- `PlotSettingsName` (string, get/set) — page setup name
-- `CurrentStyleSheet` (string, get-only) — plot style table (.ctb or .stb)
-- `PlotType` (PlotType, get-only) — plot area type
-- `PlotRotation` (PlotRotation, get-only) — rotation
-- `PlotPaperSize` (Point2d, get-only) — paper dimensions
-- `PlotOrigin` (Point2d, get-only) — plot origin offset
-- `PlotPaperMargins` (Extents2d, get-only) — non-printable margins
-- `UseStandardScale` (bool, get-only) — using standard vs custom scale
-- `StdScale` (double, get-only) — standard scale value
-- `CustomPrintScale` (CustomScale, get-only) — custom scale
-- `PlotCentered` (bool, get-only) — plot centered on paper
-- `PlotHidden` (bool, get/set) — plot with hidden lines removed
-- `PlotPlotStyles` (bool, get/set) — apply plot styles
-- `PrintLineweights` (bool, get/set) — print lineweights
-- `ScaleLineweights` (bool, get/set) — scale lineweights with plot scale
-- `DrawViewportsFirst` (bool, get/set) — draw paper space last
-- `ShadePlot` (ShadePlotType, get/set) — shade plot mode
 
 ### Page Setups (Named PlotSettings)
 

@@ -82,15 +82,6 @@ using (Transaction ts = db.TransactionManager.StartTransaction())
 
 ## Catchment Properties
 
-- Name (string, get/set) — catchment display name
-- Area (double, get) — computed area in square drawing units
-- Perimeter (double, get) — boundary perimeter length
-- SurfaceId (ObjectId, get) — reference surface for flow analysis
-- RunoffCoefficient (double, get/set) — dimensionless C value for rational method
-- RainfallIntensity (double, get/set) — design storm intensity (in/hr or mm/hr)
-- TimeOfConcentration (double, get/set) — Tc in minutes
-- DischargePoint (Point2d, get) — discharge location
-
 ### Reading Properties
 
 ```csharp
@@ -326,17 +317,6 @@ using (Transaction ts = db.TransactionManager.StartTransaction())
     ts.Commit();
 }
 ```
-
-### Catchment Label Property Fields
-
-Common property fields available in catchment labels:
-- `Catchment Area` -- the computed area of the catchment boundary
-- `Catchment Perimeter` -- boundary perimeter length
-- `Runoff Coefficient` -- the C value
-- `Rainfall Intensity` -- design storm intensity
-- `Time of Concentration` -- Tc in minutes
-- `Peak Runoff` -- computed Q value (rational method)
-- `Catchment Name` -- the catchment object name
 
 ## Catchment Styles
 

@@ -23,12 +23,12 @@ Check each skill against the required format:
 - H1 title is present and descriptive
 - "Use this skill when..." sentence follows the H1
 - Code blocks use ` ```csharp ` fencing
-- Property lists use `- Name (type, get/set) — description` format
-- Method lists use `- Name(params) → ReturnType — description` format
+- No standalone property/method reference lists (MCP `lookup_type` provides these)
+- Properties/methods only mentioned inline with code examples
 - Gotchas section exists and is second-to-last
 - Related Skills section exists and is last
 - Related Skills entries use `- `name` — description` format
-- Target line count is 250-400 (flag outliers)
+- Target line count is 150-300 (flag outliers)
 
 **2. API Accuracy**
 For each code example:
@@ -39,22 +39,31 @@ For each code example:
 - Check that OpenMode usage is correct (ForRead vs ForWrite vs ForNotify)
 - Verify namespace references are accurate
 
-**3. Completeness**
+**3. MCP Signature Verification**
+For each code example, verify against the API database:
+
+- Use `lookup_type` to confirm every type name exists
+- Use `get_parameters` to verify method call parameter counts, types, and order
+- Use `get_enum_values` to verify enum value names
+- Check for obsolete members — flag any that are used without noting the deprecation
+- Compare skill code patterns against the DB to catch outdated signatures
+
+**4. Completeness**
 Check for missing coverage:
 
 - Are major API operations covered? (create, read, modify, delete where applicable)
-- Are common properties listed? Flag obviously missing ones
 - Are gotchas comprehensive? Check the C3D Plugins codebase for patterns that suggest gotchas not documented
 - Are code examples practical and representative of real usage?
+- Flag any remaining standalone property/method reference lists — these should be removed (MCP provides them)
 
-**4. Cross-Reference Integrity**
+**5. Cross-Reference Integrity**
 Check Related Skills sections across all skills:
 
 - Every skill referenced in a Related Skills section must exist as a directory in `skills/`
 - Cross-references should be bidirectional — if A links to B, B should link to A (flag missing backlinks)
 - Descriptions should accurately characterize the relationship
 
-**5. Consistency**
+**6. Consistency**
 Compare skills against each other:
 
 - Formatting style is consistent (em-dashes vs hyphens, heading levels, etc.)

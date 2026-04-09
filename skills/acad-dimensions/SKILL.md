@@ -37,8 +37,6 @@ btr.AppendEntity(dim);
 tr.AddNewlyCreatedDBObject(dim, true);
 ```
 
-Properties: `XLine1Point`, `XLine2Point`, `DimLinePoint` (Point3d, get/set), `Oblique` (double, get/set)
-
 ### Rotated Dimension
 
 ```csharp
@@ -50,8 +48,6 @@ RotatedDimension dim = new RotatedDimension(
     "",                         // dimension text
     db.Dimstyle);
 ```
-
-Properties: `XLine1Point`, `XLine2Point`, `DimLinePoint`, `Rotation`, `Oblique` (all get/set)
 
 ### Arc Dimension
 
@@ -65,8 +61,6 @@ ArcDimension dim = new ArcDimension(
     db.Dimstyle);
 ```
 
-Properties: `CenterPoint`, `XLine1Point`, `XLine2Point`, `ArcPoint` (Point3d, get/set), `Leader1Point`, `Leader2Point` (Point3d, get/set), `ArcStartParam`, `ArcEndParam` (double, get/set), `ArcSymbolType` (int, get/set), `IsPartial` (bool, get/set), `HasLeader` (bool, get/set)
-
 ### Radial Dimension
 
 ```csharp
@@ -78,8 +72,6 @@ RadialDimension dim = new RadialDimension(
     db.Dimstyle);
 ```
 
-Properties: `Center`, `ChordPoint` (Point3d, get/set), `LeaderLength` (double, get/set)
-
 ### Diametric Dimension
 
 ```csharp
@@ -90,8 +82,6 @@ DiametricDimension dim = new DiametricDimension(
     "",                         // dimension text
     db.Dimstyle);
 ```
-
-Properties: `ChordPoint`, `FarChordPoint` (Point3d, get/set), `LeaderLength` (double, get/set)
 
 ### Angular Dimension (2-Line)
 
@@ -106,8 +96,6 @@ LineAngularDimension2 dim = new LineAngularDimension2(
     db.Dimstyle);
 ```
 
-Properties: `XLine1Start`, `XLine1End`, `XLine2Start`, `XLine2End`, `ArcPoint` (all Point3d, get/set)
-
 ### Angular Dimension (3-Point)
 
 ```csharp
@@ -120,8 +108,6 @@ Point3AngularDimension dim = new Point3AngularDimension(
     db.Dimstyle);
 ```
 
-Properties: `CenterPoint`, `XLine1Point`, `XLine2Point`, `ArcPoint` (all Point3d, get/set)
-
 ### Ordinate Dimension
 
 ```csharp
@@ -132,102 +118,6 @@ OrdinateDimension dim = new OrdinateDimension(
     "",                         // dimension text
     db.Dimstyle);
 ```
-
-Properties: `UsingXAxis` (bool, get/set), `UsingYAxis` (bool, get-only), `Origin` (Point3d, get/set), `DefiningPoint` (Point3d, get/set), `LeaderEndPoint` (Point3d, get/set)
-
-## Dimension Base Properties (on all dimension types)
-
-**Text:**
-- `DimensionText` (string, get/set) - override text ("" = show measurement, "<>" = include measurement in custom text)
-- `Prefix` (string, get/set) - text prefix
-- `Suffix` (string, get/set) - text suffix
-- `TextPosition` (Point3d, get/set) - text position
-- `TextRotation` (double, get/set) - text rotation in radians
-- `TextAttachment` (AttachmentPoint, get/set)
-- `UsingDefaultTextPosition` (bool, get/set)
-- `Measurement` (double, get-only) - the measured value
-
-**Style:**
-- `DimensionStyle` (ObjectId, get/set)
-- `DimensionStyleName` (string, get/set)
-- `TextStyleId` (ObjectId, get/set) - Dimtxsty equivalent
-
-**Geometry:**
-- `Normal` (Vector3d, get/set)
-- `Elevation` (double, get/set)
-- `HorizontalRotation` (double, get/set)
-- `DimBlockPosition` (Point3d, get-only)
-- `DimBlockId` (ObjectId, get/set)
-- `DynamicDimension` (bool, get/set)
-
-**Dimension variable overrides (per-entity):**
-These override the dimension style for this specific dimension. Most commonly used:
-
-- `Dimasz` (double) - arrow size
-- `Dimtxt` (double) - text height
-- `Dimscale` (double) - overall scale factor
-- `Dimgap` (double) - gap between text and dimension line
-- `Dimexe` (double) - extension line extension
-- `Dimexo` (double) - extension line offset from origin
-- `Dimdle` (double) - dimension line extension past extension lines
-- `Dimdli` (double) - dimension line increment for baseline dimensions
-- `Dimclrd` (Color) - dimension line color
-- `Dimclre` (Color) - extension line color
-- `Dimclrt` (Color) - text color
-- `Dimse1` (bool) - suppress first extension line
-- `Dimse2` (bool) - suppress second extension line
-- `Dimsd1` (bool) - suppress first dimension line segment
-- `Dimsd2` (bool) - suppress second dimension line segment
-- `Dimtih` (bool) - text inside horizontal
-- `Dimtoh` (bool) - text outside horizontal
-- `Dimtix` (bool) - force text inside extension lines
-- `Dimtofl` (bool) - force dimension line between extension lines
-- `Dimupt` (bool) - user-positioned text
-- `Dimblk` (ObjectId) - default arrow block
-- `Dimblk1` (ObjectId) - first arrow block
-- `Dimblk2` (ObjectId) - second arrow block
-- `Dimsah` (bool) - separate arrow heads
-- `Dimtol` (bool) - show tolerances
-- `Dimlim` (bool) - show limits
-- `Dimtp` (double) - plus tolerance
-- `Dimtm` (double) - minus tolerance
-- `Dimdec` (int) - primary decimal places
-- `Dimlfac` (double) - linear scale factor
-- `Dimrnd` (double) - rounding increment
-- `Dimpost` (string) - primary units suffix
-- `Dimapost` (string) - alternate units suffix
-- `Dimalt` (bool) - alternate units on
-- `Dimaltf` (double) - alternate units scale factor
-- `Dimaltd` (int) - alternate units decimal places
-- `Dimlunit` (int) - linear unit format
-- `Dimaunit` (int) - angular unit format
-- `Dimadec` (int) - angular decimal places
-- `Dimdsep` (char) - decimal separator
-- `Dimfrac` (int) - fraction format
-- `DimfxlenOn` (bool) - fixed extension line length on
-- `Dimfxlen` (double) - fixed extension line length
-- `Dimtfill` (int) - text background fill mode
-- `Dimtfillclr` (Color) - text background fill color
-- `Dimlwd` (LineWeight) - dimension line weight
-- `Dimlwe` (LineWeight) - extension line weight
-- `Dimltype` (ObjectId) - dimension line linetype
-- `Dimltex1` (ObjectId) - extension line 1 linetype
-- `Dimltex2` (ObjectId) - extension line 2 linetype
-- `Dimtmove` (int) - text movement rule
-- `Dimjust` (int) - text justification
-- `Dimtad` (int) - text above/below dimension line
-- `Dimtvp` (double) - text vertical position
-
-## Methods
-
-- `SetDimstyleData(DimStyleTableRecord)` - apply style to dimension
-- `GetDimstyleData()` -> `DimStyleTableRecord` - get effective style
-- `RecomputeDimensionBlock(bool forceUpdate)` - regenerate dimension graphics
-- `GenerateLayout()` - generate layout geometry
-- `FormatMeasurement(double measurement, string dimensionText)` -> string
-- `RemoveTextField()` - remove text field
-- `FieldToMText(MText)` - convert field to MText
-- `FieldFromMText(MText)` - extract field from MText
 
 ## Dimension Styles
 
@@ -265,13 +155,6 @@ tr.AddNewlyCreatedDBObject(dstr, true);
 // Apply style to a dimension
 dim.DimensionStyle = styleId;
 ```
-
-**DimStyleTableRecord** has all the same Dim* properties as the Dimension base class, plus:
-- `Name` (inherited from SymbolTableRecord)
-- `Dimtxsty` (ObjectId) - text style (same as `TextStyleId` on Dimension)
-- `Dimtsz` (double) - tick mark size
-- `IsModifiedForRecompute` (bool, get-only)
-- `GetArrowId(DimArrowFlag whichArrow)` -> ObjectId
 
 ## Gotchas
 

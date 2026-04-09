@@ -12,11 +12,6 @@ Use this skill when creating or managing field objects - dynamic text that updat
 **Namespace:** `Autodesk.AutoCAD.DatabaseServices`
 **Base class:** `DBObject`
 
-### Constructors
-- `Field()` - empty field
-- `Field(string fieldCode)` - field from field code string
-- `Field(string fieldCode, bool textField)` - field code with text field flag
-
 ### Creating a Field
 
 ```csharp
@@ -36,50 +31,6 @@ dateField.EvaluationOption = FieldEvaluationOptions.OnOpen
 // Evaluate the field
 dateField.Evaluate();
 ```
-
-### Properties
-
-- `Value` (object, get) - current evaluated value
-- `DataType` (DataType, get) - type of the field value
-- `Format` (string, get/set) - format string
-- `IsTextField` (bool, get) - whether this is a text field
-- `EvaluatorId` (string, get/set) - evaluator plugin ID
-- `EvaluationOption` (FieldEvaluationOptions, get/set) - when to evaluate
-- `EvaluationStatus` (FieldEvaluationStatusResult, get) - current eval status
-- `State` (FieldState, get) - internal state flags
-- `FilingOption` (FieldFilingOptions, get/set)
-- `HyperLink` (HyperLink, get/set)
-
-### Methods
-
-**Field code management:**
-- `SetFieldCode(string fieldCode)` - set the field code
-- `GetFieldCode()` -> string - get plain field code
-- `GetFieldCode(FieldCodeFlags flags)` -> string - get field code with options
-
-**Field code with children:**
-- `SetFieldCodeWithChildren(FieldCodeWithChildren fieldCode)`
-- `SetFieldCodeWithChildren(FieldCodeFlags flag, FieldCodeWithChildren fieldCode)`
-- `GetFieldCodeWithChildren()` -> `FieldCodeWithChildren`
-- `GetFieldCodeWithChildren(FieldCodeFlags flags)` -> `FieldCodeWithChildren`
-
-**Children:**
-- `GetChildren()` -> `Field[]`
-- `GetChildrenIds()` -> `ObjectId[]`
-
-**Evaluation:**
-- `Evaluate()` - evaluate with defaults
-- `Evaluate(int evaluationOptions, Database database)` - evaluate with options
-- `ConvertToTextField()` - freeze field as static text
-- `GetStringValue()` -> string - get formatted string value
-
-**Data storage:**
-- `GetData(string key)` -> object
-- `SetData(string key, object data)`
-- `SetData(string key, object data, bool recursive)`
-
-**Static:**
-- `Field.FindField(string text, int iSearchFrom, ref int nStartPos, ref int nEndPos)` -> bool
 
 ## Common Field Code Patterns
 

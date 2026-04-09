@@ -69,14 +69,6 @@ regionA.BooleanOperation(BooleanOperationType.BoolSubtract, regionB);
 regionA.BooleanOperation(BooleanOperationType.BoolIntersect, regionB);
 ```
 
-## Region Properties
-
-- `Area` (double, get-only) -- enclosed area
-- `Perimeter` (double, get-only) -- total boundary length
-- `Normal` (Vector3d, get-only) -- plane normal
-- `IsNull` (bool, get-only) -- true if zero area (e.g., after a boolean that produces nothing)
-- `Bounds` (Extents3d?, get-only) -- axis-aligned bounding box
-
 ## Solid3d Primitives
 
 All primitives are created centered at the world origin. Use `TransformBy` to position them.
@@ -218,11 +210,7 @@ box.BooleanOperation(BooleanOperationType.BoolSubtract, hole);
 // hole is erased; box has a cylindrical hole through it
 ```
 
-## Solid3d Properties and Mass Properties
-
-- `Area` (double, get-only) -- total surface area
-- `IsNull` (bool, get-only) -- true if zero volume
-- `NumChanges` (int, get-only) -- modification counter
+## Solid3d Mass Properties
 
 ```csharp
 Solid3d solid = (Solid3d)tr.GetObject(solidId, OpenMode.ForRead);

@@ -17,15 +17,22 @@ You are an expert technical writer specializing in AutoCAD Civil 3D .NET API doc
 - Search AutoCAD/Civil 3D .NET API documentation for complete property/method coverage
 - Identify common gotchas and edge cases from real code and API behavior
 
-**2. Draft the Skill**
+**2. Verify Signatures with MCP**
+- For every method call in your code examples, use `get_parameters` to verify the exact signature
+- For every type reference, use `lookup_type` to confirm it exists and check the member you're calling
+- For every enum, use `get_enum_values` to verify value names
+- Flag any obsolete members and note the replacement
+
+**3. Draft the Skill**
 - Follow the exact file format specified below
 - Prioritize practical code examples drawn from real codebase patterns
 - Cover the full API surface: creation, reading, modification, deletion
-- Include property and method reference lists
+- Do NOT include property/method reference lists — the MCP `lookup_type` tool provides these on demand
+- Focus on: code examples, workflow guidance, gotchas, and "which approach to use when"
 - Write a Gotchas section based on real pitfalls
 - Add Related Skills cross-references
 
-**3. Update Cross-References**
+**4. Update Cross-References**
 - Identify existing skills that should link back to the new skill
 - Add entries to their Related Skills sections (or create the section if missing)
 
@@ -77,13 +84,10 @@ Code examples, property lists, explanatory prose.
 - Prefer patterns found in the actual C3D Plugins codebase
 - Include the transaction/database context when relevant
 
-**Property Lists:**
-- Format: `- PropertyName (type, get/set) — description`
-- Or: `- PropertyName (type, get-only) — description`
-- Use em-dash (—), not hyphen
-
-**Method Lists:**
-- Format: `- MethodName(params) → ReturnType — description`
+**Property/Method Lists:**
+- Do NOT include standalone property or method reference lists
+- The MCP `lookup_type` tool provides complete member details on demand
+- Only mention specific properties/methods inline when explaining code examples
 
 **Gotchas:**
 - Always the second-to-last section (before Related Skills)

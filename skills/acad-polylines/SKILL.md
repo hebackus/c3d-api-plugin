@@ -32,24 +32,6 @@ ms.AppendEntity(polyline);
 tr.AddNewlyCreatedDBObject(polyline, true);
 ```
 
-### Polyline Properties
-
-- `NumberOfVertices` (int, get-only) — vertex count
-- `Closed` (bool, get/set) — adds segment from last to first vertex (does not duplicate vertex)
-- `Length` (double, get-only) — total length
-- `Area` (double, get-only) — enclosed area (closed polylines only)
-- `Normal` (Vector3d, get/set) — plane normal (typically ZAxis)
-- `Elevation` (double, get/set) — Z value for all vertices (LWPOLYLINE is 2D; Z comes from this)
-- `Thickness` (double, get/set) — extrusion thickness
-- `ConstantWidth` (double, get/set) — uniform width (0 = no width)
-- `Plinegen` (bool, get/set) — generate linetype across vertices
-- `HasBulges` (bool, get-only) — any arc segments present
-- `HasWidth` (bool, get-only) — any non-zero widths present
-- `IsOnlyLines` (bool, get-only) — all segments are straight (no arcs)
-- `Layer` (string, get/set) — layer name
-- `Color` (Color, get/set) — entity color
-- `ColorIndex` (int, get/set) — ACI color (256 = ByLayer, 0 = ByBlock)
-
 ### Reading Vertices
 
 ```csharp
@@ -136,15 +118,6 @@ Point3d closest = pline.GetClosestPointTo(testPoint, false);
 // Tangent direction at a point
 Vector3d tangent = pline.GetFirstDerivative(pline.GetParameterAtPoint(pt));
 ```
-
-### Curve Properties
-
-- `StartPoint` (Point3d, get-only) — first vertex
-- `EndPoint` (Point3d, get-only) — last vertex (or first if closed)
-- `StartParam` (double, get-only) — start parameter (0.0)
-- `EndParam` (double, get-only) — end parameter (NumberOfVertices for closed)
-- `Area` (double, get-only) — enclosed area
-- `Closed` (bool, get-only) — whether the curve is closed
 
 ### Offset and Split
 
@@ -233,24 +206,6 @@ foreach (ObjectId vertexId in pline2d)
 }
 ```
 
-### Vertex2d Properties
-
-- `Position` (Point3d, get/set) — vertex location
-- `Bulge` (double, get/set) — arc to next vertex
-- `StartWidth` (double, get/set) — width at start of segment
-- `EndWidth` (double, get/set) — width at end of segment
-- `Tangent` (double, get/set) — tangent direction (curve-fit)
-- `VertexType` (Vertex2dType, get-only) — `SimplePoly`, `CurveFit`, `SplineFit`, etc.
-
-### Polyline2d Properties
-
-- `DefaultStartWidth` (double, get/set) — default start width
-- `DefaultEndWidth` (double, get/set) — default end width
-- `Closed` (bool, get/set)
-- `Elevation` (double, get/set)
-- `Normal` (Vector3d, get/set)
-- `PolyType` (Poly2dType, get/set) — `SimplePoly`, `FitCurvePoly`, `CubicSplinePoly`, `QuadSplinePoly`
-
 ## Polyline3d
 
 Polyline3d vertices are separate database objects (`PolylineVertex3d`) with full 3D coordinates.
@@ -283,17 +238,6 @@ foreach (ObjectId vertexId in pline3d)
     Point3d position = vertex.Position;
 }
 ```
-
-### PolylineVertex3d Properties
-
-- `Position` (Point3d, get/set) — 3D vertex location
-- `VertexType` (Vertex3dType, get-only) — `SimplePoly`, `FitVertex`, `SplineControlPoint`, `SplineFitVertex`
-
-### Polyline3d Properties
-
-- `Closed` (bool, get/set)
-- `Length` (double, get-only) — total 3D length
-- `PolyType` (Poly3dType, get/set) — `SimplePoly`, `CubicSplinePoly`, `QuadSplinePoly`
 
 ## Handling All Polyline Types
 

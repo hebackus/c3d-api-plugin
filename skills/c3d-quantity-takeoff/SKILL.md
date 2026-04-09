@@ -264,45 +264,6 @@ ObjectIdCollection elevSolids = tinSurface.CreateSolidsAtFixedElevation(
     elevation: 95.0, "V-EXCAVATION", penIndex: 3);
 ```
 
-## Volume Surface Properties
-
-- CutFactor (double, get/set) -- multiplier applied to cut volumes (1.0 = no adjustment)
-- FillFactor (double, get/set) -- multiplier applied to fill volumes (accounts for swell/shrinkage)
-- GetVolumeProperties() -> VolumeSurfaceProperties -- computed volume results
-
-### VolumeSurfaceProperties Fields
-
-- UnadjustedCutVolume (double, get) -- raw cut volume before factor
-- UnadjustedFillVolume (double, get) -- raw fill volume before factor
-- UnadjustedNetVolume (double, get) -- raw net volume (cut minus fill)
-- AdjustedCutVolume (double, get) -- cut volume after CutFactor applied
-- AdjustedFillVolume (double, get) -- fill volume after FillFactor applied
-- AdjustedNetVolume (double, get) -- net volume after factors applied
-- BaseSurface (ObjectId, get) -- the base (existing) surface
-- ComparisonSurface (ObjectId, get) -- the comparison (proposed) surface
-
-### SurfaceVolumeInfo Fields
-
-- Cut (double, get) -- cut volume within the bounded region
-- Fill (double, get) -- fill volume within the bounded region
-- Net (double, get) -- net volume within the bounded region
-
-## QTO Material Classes
-
-- QTOMaterialListCollection -- collection of material lists on a SampleLineGroup
-- QTOMaterialList -- a named material list containing material definitions
-- QTOMaterial -- a single material definition (e.g., "Earthwork", "Pavement")
-- QTOMaterialSubcriteriaCollection -- subcriteria defining material extents
-- QTOMaterialSubcriteria -- a subcriteria entry (surface pair or corridor shape)
-- QTOMaterialItem -- reference to a surface or shape used in the subcriteria
-- QuantityTakeoffResult -- computed quantity result for a material
-
-## QTO Report Methods
-
-- GenerateXMLReport(QTOGenerateDetail) -> string -- generates summary or detailed XML report
-- TransformXMLReport(string xml, string xslPath, string outputPath) -- transforms XML report to CSV/HTML via XSLT
-- SampleLineGroup.ReportQuantities() -> void -- generates quantities report for a group of sample lines
-
 ## Gotchas
 
 - **Material computation requires sample lines.** You cannot compute corridor material volumes without first creating a sample line group along the alignment. The sample lines define the cross-section stations where areas are calculated and volumes interpolated.

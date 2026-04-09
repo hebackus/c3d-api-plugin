@@ -87,17 +87,6 @@ private static ObjectId EnsureLinetypeLoaded(
 }
 ```
 
-## LinetypeTableRecord Properties
-
-- `Name` (string, get/set) — linetype name
-- `AsciiDescription` (string, get/set) — description shown in linetype dialog (e.g., "Hidden __ __ __")
-- `PatternLength` (double, get-only) — total length of one pattern repeat
-- `NumDashes` (int, get-only) — number of dash elements in the pattern
-- `IsScaledToFit` (bool, get/set) — whether the pattern scales to fit the entity length
-- `Comments` (string, get/set) — additional comments
-- `IsDependent` (bool, get-only) — true if xref-dependent
-- `IsResolved` (bool, get-only) — true if xref resolved
-
 ### Reading Dash Pattern Elements
 
 ```csharp
@@ -292,20 +281,6 @@ tst.UpgradeOpen();
 tst.Add(style);
 tr.AddNewlyCreatedDBObject(style, true);
 ```
-
-## TextStyleTableRecord Properties
-
-- `Name` (string, get/set) — style name (inherited from SymbolTableRecord)
-- `FileName` (string, get/set) — font file (.ttf for TrueType, .shx for SHX)
-- `BigFontFileName` (string, get/set) — big font file for CJK/extended character sets
-- `Font` (FontDescriptor, get/set) — TrueType descriptor (typeface, bold, italic, charset, pitch)
-- `TextSize` (double, get/set) — fixed text size (0.0 = variable, set per entity)
-- `PriorSize` (double, get/set) — last-used height when TextSize is 0
-- `XScale` (double, get/set) — width factor (1.0 = normal)
-- `ObliquingAngle` (double, get/set) — oblique angle in radians (positive = forward lean)
-- `IsVertical` (bool, get/set) — vertical text direction
-- `IsShapeFile` (bool, get/set) — true if this record represents a .shx shape file (not a user text style)
-- `FlagBits` (byte, get/set) — bit 2 = vertical, bit 4 = shape file; prefer `IsVertical`/`IsShapeFile`
 
 ### Detecting Font Type
 

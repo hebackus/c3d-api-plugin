@@ -98,26 +98,6 @@ private static ObjectId GetLinetypeId(Transaction tr, Database db, string name)
 }
 ```
 
-## LayerTableRecord Properties
-
-- `Name` (string, get/set) — layer name (max 255 chars)
-- `Color` (Color, get/set) — layer color (ACI, TrueColor, or color book)
-- `LinetypeObjectId` (ObjectId, get/set) — assigned linetype
-- `LineWeight` (LineWeight, get/set) — line weight enum
-- `IsOff` (bool, get/set) — layer visibility off
-- `IsFrozen` (bool, get/set) — layer frozen (not regenerated)
-- `IsLocked` (bool, get/set) — layer locked (visible but uneditable)
-- `IsPlottable` (bool, get/set) — include in plot output
-- `IsReconciled` (bool, get/set) — reconciled (new layer notification cleared)
-- `IsHidden` (bool, get/set) — hidden in layer manager
-- `ViewportVisibilityDefault` (bool, get/set) — default visibility in new viewports
-- `PlotStyleName` (string, get/set) — named plot style
-- `Description` (string, get/set) — layer description
-- `Transparency` (Transparency, get/set) — layer transparency
-- `IsDependent` (bool, get-only) — true if xref-dependent (read-only layer)
-- `IsResolved` (bool, get-only) — true if xref resolved
-- `ObjectId` (ObjectId, get-only) — database identity
-
 ## Color Assignment
 
 ### ACI (AutoCAD Color Index)

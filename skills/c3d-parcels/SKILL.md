@@ -35,17 +35,6 @@ foreach (ObjectId siteId in siteIds)
 }
 ```
 
-### Site Properties and Methods
-
-- Name (string, get/set) — display name of the site
-- Description (string, get/set) — user description
-
-Key methods:
-
-- GetParcelIds() → ObjectIdCollection — all parcels in the site
-- GetAlignmentIds() → ObjectIdCollection — all alignments in the site
-- GetFeatureLineIds() → ObjectIdCollection — all feature lines in the site
-
 ### Creating a Site
 
 ```csharp
@@ -71,19 +60,6 @@ foreach (ObjectId parcelId in parcelIds)
 ```
 
 ## Parcel Properties
-
-- Name (string, get/set) — parcel display name (e.g., "Lot 15A")
-- Number (int, get/set) — integer lot number
-- Area (double, get) — computed area in square drawing units
-- Perimeter (double, get) — computed perimeter length
-- Address (string, get/set) — street address
-- TaxId (string, get/set) — tax parcel identifier
-- LandUse (string, get/set) — land use classification
-- StyleId (ObjectId, get/set) — parcel display style
-- SiteId (ObjectId, get) — parent site
-- IsEnclosingParcel (bool, get) — true if this is the remainder/parent parcel
-- Centroid (Point3d, get) — computed center point of the parcel
-- Segments (ParcelSegmentCollection, get) — boundary segments
 
 ```csharp
 Parcel parcel = ts.GetObject(parcelId, OpenMode.ForWrite) as Parcel;
@@ -150,17 +126,6 @@ foreach (ParcelSegment segment in parcel.Segments)
     }
 }
 ```
-
-### Segment Properties
-
-- StartPoint (Point2d, get) — segment start coordinate
-- EndPoint (Point2d, get) — segment end coordinate
-- Length (double, get) — segment length (arc length for curves)
-- Direction (double, get) — bearing in radians from north, clockwise positive
-- IsCurve (bool, get) — true if arc segment, false if line
-- Radius (double, get) — arc radius (valid when IsCurve is true)
-- CenterPoint (Point2d, get) — arc center (valid when IsCurve is true)
-- IsClockwise (bool, get) — arc direction (valid when IsCurve is true)
 
 ## Parcel Topology
 

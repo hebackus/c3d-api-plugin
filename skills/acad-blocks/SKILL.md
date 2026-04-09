@@ -39,42 +39,6 @@ using (Transaction tr = db.TransactionManager.StartTransaction())
 }
 ```
 
-### BlockTableRecord Properties
-
-- `Name` (string, inherited from SymbolTableRecord)
-- `Origin` (Point3d, get/set) - block base point
-- `Comments` (string, get/set) - block description
-- `PathName` (string, get/set) - xref path
-- `Units` (UnitsValue, get/set) - block units
-- `Explodable` (bool, get/set) - allow exploding
-- `BlockScaling` (BlockScaling, get/set) - scaling behavior
-- `LayoutId` (ObjectId, get/set) - associated layout
-- `IsLayout` (bool, get-only) - is a layout block
-- `IsAnonymous` (bool, get-only) - anonymous (*U) block
-- `IsDynamicBlock` (bool, get-only) - has dynamic properties
-- `IsFromExternalReference` (bool, get-only) - xref block
-- `IsFromOverlayReference` (bool, get/set) - overlay xref
-- `IsUnloaded` (bool, get/set) - xref unloaded
-- `XrefStatus` (XrefStatus, get-only) - xref status
-- `HasAttributeDefinitions` (bool, get-only) - contains AttDefs
-- `HasPreviewIcon` (bool, get-only) - has preview
-- `PreviewIcon` (Bitmap, get/set) - preview image
-- `DrawOrderTableId` (ObjectId, get-only) - draw order table
-- `BlockBeginId` (ObjectId, get-only)
-- `BlockEndId` (ObjectId, get-only)
-- Static: `BlockTableRecord.ModelSpace`, `BlockTableRecord.PaperSpace`
-
-### BlockTableRecord Methods
-
-- `AppendEntity(Entity entity)` → ObjectId - add entity to block def
-- `GetBlockReferenceIds(bool directOnly, bool forceValidity)` → ObjectIdCollection
-- `GetErasedBlockReferenceIds()` → ObjectIdCollection
-- `GetAnonymousBlockIds()` → ObjectIdCollection
-- `GetXrefDatabase(bool incrementUnresolved)` → Database
-- `AssumeOwnershipOf(ObjectIdCollection entitiesToMove)` - move entities into block
-- `UpdateAnonymousBlocks()` - update anonymous block definitions
-- `GetEnumerator()` → `BlockTableRecordEnumerator` - iterate contained entities
-
 ### Iterating Block Contents
 
 ```csharp
@@ -105,33 +69,6 @@ space.AppendEntity(blockRef);
 tr.AddNewlyCreatedDBObject(blockRef, true);
 ```
 
-### BlockReference Properties
-
-- `Position` (Point3d, get/set) - insertion point
-- `Rotation` (double, get/set) - rotation in radians
-- `ScaleFactors` (Scale3d, get/set) - X/Y/Z scale
-- `Normal` (Vector3d, get/set) - normal vector
-- `BlockTableRecord` (ObjectId, get/set) - definition ID
-- `BlockTransform` (Matrix3d, get/set) - full transform matrix
-- `Name` (string, get-only) - block name
-- `BlockUnit` (UnitsValue, get/set) - unit value
-- `UnitFactor` (double, get-only) - unit conversion factor
-- `AttributeCollection` (AttributeCollection, get-only) - attributes
-- `IsDynamicBlock` (bool, get-only) - is dynamic block
-- `DynamicBlockTableRecord` (ObjectId, get-only) - original dynamic BTR
-- `AnonymousBlockTableRecord` (ObjectId, get-only) - anonymous copy BTR
-- `DynamicBlockReferencePropertyCollection` (DynamicBlockReferencePropertyCollection, get-only)
-- `TreatAsBlockRefForExplode` (bool, get-only)
-
-### BlockReference Methods
-
-- `ExplodeToOwnerSpace()` - explode into parent space
-- `ResetBlock()` - reset dynamic block to default state
-- `ConvertToStaticBlock(string newBlockName)` - convert dynamic to static
-- `ConvertToStaticBlock()` - convert with auto-generated name
-- `GeometryExtentsBestFit()` → `Extents3d`
-- `GeometryExtentsBestFit(Matrix3d parentTransform)` → `Extents3d`
-
 ## Attributes
 
 ### Attribute Definition (in block definition)
@@ -161,21 +98,6 @@ attDef.UpdateMTextAttributeDefinition();
 blockDef.AppendEntity(attDef);
 tr.AddNewlyCreatedDBObject(attDef, true);
 ```
-
-**AttributeDefinition properties:**
-- `Tag` (string, get/set) - attribute tag name
-- `Prompt` (string, get/set) - user prompt
-- `Constant` (bool, get/set) - fixed value, no prompt
-- `Invisible` (bool, get/set) - hidden attribute
-- `Verifiable` (bool, get/set) - verify on insert
-- `Preset` (bool, get/set) - use default, no prompt
-- `FieldLength` (int, get/set) - field width
-- `LockPositionInBlock` (bool, get/set) - lock position
-- `IsMTextAttributeDefinition` (bool, get/set) - multiline attribute
-- `MTextAttributeDefinition` (MText, get/set) - MText content
-- Inherits all DBText properties (Position, Height, Rotation, TextString, etc.)
-
-**Method:** `UpdateMTextAttributeDefinition()` - sync MText content
 
 ### Attribute Reference (on block insert)
 
@@ -225,23 +147,6 @@ foreach (ObjectId attId in blockRef.AttributeCollection)
 }
 ```
 
-**AttributeReference properties:**
-- `Tag` (string, get/set) - attribute tag
-- `Invisible` (bool, get/set) - visibility
-- `IsConstant` (bool, get-only) - constant flag
-- `IsPreset` (bool, get-only) - preset flag
-- `IsVerifiable` (bool, get-only) - verifiable flag
-- `FieldLength` (int, get/set)
-- `LockPositionInBlock` (bool, get/set)
-- `IsMTextAttribute` (bool, get/set) - multiline attribute
-- `MTextAttribute` (MText, get/set) - MText content
-- Inherits all DBText properties (TextString, Height, Position, etc.)
-
-**Methods:**
-- `SetAttributeFromBlock(AttributeDefinition def, Matrix3d blockTransform)` - initialize from definition
-- `SetAttributeFromBlock(Matrix3d blockTransform)` - initialize position from transform
-- `UpdateMTextAttribute()` - sync MText content
-
 ## Dynamic Block Properties
 
 ```csharp
@@ -284,18 +189,6 @@ if (blockRef.IsDynamicBlock)
     }
 }
 ```
-
-**DynamicBlockReferenceProperty properties (all get-only except Value):**
-- `PropertyName` (string)
-- `Value` (object, get/set) - the property value
-- `ReadOnly` (bool)
-- `Show` (bool)
-- `VisibleInCurrentVisibilityState` (bool)
-- `PropertyTypeCode` (short)
-- `UnitsType` (DynamicBlockReferencePropertyUnitsType)
-- `Description` (string)
-- `BlockId` (ObjectId)
-- `GetAllowedValues()` → `object[]`
 
 ## Gotchas
 

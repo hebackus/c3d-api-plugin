@@ -29,47 +29,6 @@ using (Transaction tr = db.TransactionManager.StartTransaction())
 }
 ```
 
-## MText Properties
-
-**Content:**
-- `Contents` (string, get/set) - text with formatting codes
-- `ContentsRTF` (string, get/set) - RTF format content
-- `Text` (string, get-only) - plain text without formatting
-
-**Geometry:**
-- `Location` (Point3d, get/set) - insertion point
-- `Width` (double, get/set) - text boundary width
-- `Height` (double, get/set) - text boundary height
-- `Rotation` (double, get/set) - rotation in radians
-- `Normal` (Vector3d, get/set) - normal vector
-- `Direction` (Vector3d, get/set) - direction vector
-
-**Text styling:**
-- `TextHeight` (double, get/set) - character height
-- `TextStyleId` (ObjectId, get/set) - text style reference
-- `TextStyleName` (string, get-only) - text style name
-- `Attachment` (AttachmentPoint, get/set) - alignment point
-- `FlowDirection` (FlowDirection, get/set) - text direction
-
-**Size (read-only):**
-- `ActualWidth` (double, get) - computed width
-- `ActualHeight` (double, get) - computed height
-- `Ascent` (double, get)
-- `Descent` (double, get)
-
-**Line spacing:**
-- `LineSpacingStyle` (LineSpacingStyle, get/set) - AtLeast (1) or Exactly (2)
-- `LineSpacingFactor` (double, get/set)
-- `LineSpaceDistance` (double, get/set)
-
-**Background fill:**
-- `BackgroundFill` (bool, get/set) - enable background
-- `BackgroundFillColor` (Color, get/set)
-- `BackgroundScaleFactor` (double, get/set)
-- `BackgroundTransparency` (Transparency, get/set)
-- `UseBackgroundColor` (bool, get/set)
-- `ShowBorders` (bool, get/set)
-
 ## MText Columns
 
 ```csharp
@@ -162,15 +121,6 @@ Overloads:
 - `ExplodeFragments(MTextFragmentCallback enumerator, object userData)`
 - `ExplodeFragments(MTextFragmentCallback enumerator, object userData, WorldDraw context)`
 
-## MText Methods
-
-- `GetBoundingPoints()` -> `Point3dCollection` - corner points of bounding box
-- `SetAttachmentMovingLocation(AttachmentPoint)` - reposition based on new attachment
-- `ConvertFieldToText()` - convert embedded fields to static text
-- `getMTextWithFieldCodes()` -> string - get text preserving field codes
-- `CorrectSpelling()` -> int - launch spell checker
-- `SetContentsRtf(string)` -> int - set RTF content
-
 ## DBText (Single-Line Text)
 
 ```csharp
@@ -186,31 +136,6 @@ text.Oblique = 0.0;
 btr.AppendEntity(text);
 tr.AddNewlyCreatedDBObject(text, true);
 ```
-
-**Properties:**
-- `Position` (Point3d, get/set) - base insertion point
-- `AlignmentPoint` (Point3d, get/set) - alignment reference point
-- `TextString` (string, get/set) - the text content
-- `Height` (double, get/set) - character height
-- `Rotation` (double, get/set) - rotation in radians
-- `WidthFactor` (double, get/set) - width scale
-- `Oblique` (double, get/set) - oblique angle in radians
-- `Thickness` (double, get/set) - extrusion thickness
-- `Normal` (Vector3d, get/set)
-- `TextStyleId` (ObjectId, get/set)
-- `TextStyleName` (string, get-only)
-- `Justify` (AttachmentPoint, get/set) - justification
-- `HorizontalMode` (TextHorizontalMode, get/set)
-- `VerticalMode` (TextVerticalMode, get/set)
-- `IsMirroredInX` (bool, get/set)
-- `IsMirroredInY` (bool, get/set)
-- `IsDefaultAlignment` (bool, get-only)
-
-**Methods:**
-- `AdjustAlignment(Database)` - recalculate alignment
-- `ConvertFieldToText()` - convert embedded fields
-- `getTextWithFieldCodes()` -> string
-- `CorrectSpelling()` -> int
 
 ## Text Styles
 
@@ -233,19 +158,6 @@ tr.AddNewlyCreatedDBObject(style, true);
 // Font descriptor (alternative to FileName)
 style.Font = new FontDescriptor("Arial", false, false, 0, 0);
 ```
-
-**TextStyleTableRecord properties:**
-- `Name` (string, inherited from SymbolTableRecord)
-- `FileName` (string, get/set) - TTF or SHX font file
-- `BigFontFileName` (string, get/set) - big font for CJK
-- `Font` (FontDescriptor, get/set) - font descriptor
-- `TextSize` (double, get/set) - fixed size (0 = variable)
-- `PriorSize` (double, get/set) - previous text size
-- `XScale` (double, get/set) - width factor
-- `ObliquingAngle` (double, get/set) - oblique angle
-- `IsVertical` (bool, get/set) - vertical text
-- `IsShapeFile` (bool, get/set) - shape file
-- `FlagBits` (byte, get/set)
 
 ## Enums
 

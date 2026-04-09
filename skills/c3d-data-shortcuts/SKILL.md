@@ -342,44 +342,6 @@ if (brokenCount > 0)
 dsMgr.Dispose();
 ```
 
-## DataShortcutKey Properties
-
-When you call `entity.GetReferenceInfo()` on a reference entity, the returned `DataShortcutKey` contains:
-
-- SourceDrawing (string, get) — full path to the source drawing file
-- SourceEntityName (string, get) — name of the entity in the source drawing
-- RefType (RefType, get) — type of referenced entity (Surface, Alignment, etc.)
-
-## DataShortcuts Static Methods
-
-- GetWorkingFolderPath() -> string — returns current working folder path
-- SetWorkingFolderPath(string path) — sets the working folder path
-- GetProjectFolderPath() -> string — returns current project folder (relative to working folder)
-- SetProjectFolderPath(string path) — sets the project folder path
-- GetDSProjectId(string projectPath) -> int — gets project ID from a full project path
-- AssociateDSProject(int projectId) — associates a project with the current drawing
-- CreateDataShortcutManager(ref int projectId) -> DataShortcutManager — creates a manager for the project
-- CreateReference(Database db, string entityName, RefType type) — creates a DREF in the target database
-- SynchronizeImport(Database db) — synchronizes all DREFs in the database
-- SynchronizeImport(Database db, ObjectId entityId) — synchronizes a specific DREF
-- RepairBrokenDRef(ObjectId brokenId, string targetDwgPath, bool autoRepairOther) — repairs a broken DREF entity
-- RepairBrokenDataShortcut(int index, string targetDwgPath, bool autoRepairOther) -> bool — repairs a broken shortcut in the project
-
-## DataShortcutManager Instance Methods
-
-- GetPublishedItemsCount() -> int — number of published items in the project
-- GetPublishedItemAt(int index) -> DSEntityInfo — info about a published item
-- CreateReference(int itemIndex, Database db) — creates a DREF from a published item
-- GetBrokenDRefCount(Database db) -> int — number of broken DREFs in a drawing
-- GetBrokenDRefEntityId(Database db, int index) -> ObjectId — ObjectId of a broken DREF entity
-- Dispose() — releases unmanaged resources (always call when done)
-
-## Entity Reference Properties
-
-- IsReferenceObject (bool, get) — true if the entity is a data reference from another drawing
-- IsReferenceSubObject (bool, get) — true if the entity came as a child of a referenced parent
-- GetReferenceInfo() -> DataShortcutKey — returns source drawing and entity info for a reference
-
 ## Gotchas
 
 - Data reference entities are **read-only** in the host drawing; opening ForWrite on referenced properties throws an exception

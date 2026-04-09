@@ -35,24 +35,6 @@ public static ObjectId GetOrCreateImageDef(Database db, Transaction tr,
 }
 ```
 
-### RasterImageDef Properties
-
-- `SourceFileName` (string, get/set) — stored file path (absolute or relative)
-- `ActiveFileName` (string, get) — resolved path AutoCAD actually found
-- `Size` (Vector2d, get) — pixel dimensions (width, height)
-- `ResolutionMMPerPixel` (Vector2d, get/set) — resolution in mm per pixel
-- `ResolutionUnits` (ResolutionUnit, get/set) — None=0, Centimeter=1, Inch=2
-- `IsLoaded` (bool, get) — true if image data is loaded in memory
-- `IsEmbedded` (bool, get) — true if image data is embedded in the DWG
-
-### RasterImageDef Methods
-
-- `Load()` — load image data from file into memory
-- `Unload()` — release image data from memory
-- `Embed()` — embed image data into the drawing file
-- `GetImageDictionary(Database db)` → ObjectId — get the image dictionary (static)
-- `CreateImageDictionary(Database db)` → ObjectId — create the image dictionary (static)
-
 ## RasterImageDefReactor
 
 A `RasterImageDefReactor` keeps an image definition alive while `RasterImage` entities reference it. Without a reactor, the definition can be purged prematurely.
@@ -153,27 +135,6 @@ Point3d pixelPoint = wcsPoint.TransformBy(modelToPixel);
 Point2d clipPt = new Point2d(pixelPoint.X, pixelPoint.Y);
 ```
 
-## RasterImage Properties
-
-- `ShowImage` (bool, get/set) — show or hide image raster data
-- `IsClipped` (bool, get/set) — enable or disable clipping
-- `ClipInverted` (bool, get/set) — invert clip region (show outside, hide inside)
-- `ImageTransparency` (bool, get/set) — honor transparent pixels
-- `Orientation` (CoordinateSystem3d, get/set) — origin, U-vector (width), V-vector (height)
-- `ImageDefId` (ObjectId, get/set) — link to the RasterImageDef
-- `ReactorId` (ObjectId, get/set) — link to the RasterImageDefReactor
-- `Brightness` (sbyte, get/set) — 0 to 100, default 50
-- `Contrast` (sbyte, get/set) — 0 to 100, default 50
-- `Fade` (sbyte, get/set) — 0 to 100, default 0
-- `PixelToModelTransform` (Matrix3d, get) — transform from pixel space to WCS
-
-### RasterImage Methods
-
-- `SetClipBoundary(ClipBoundaryType type, Point2dCollection pts)` — set clip boundary
-- `SetClipBoundaryToWholeImage()` — reset clip to full image extents
-- `GetClipBoundary()` → ClipBoundary — read existing clip boundary
-- `AssociateRasterDef(RasterImageDef def)` — bind image to its definition for reactor tracking
-
 ## RasterVariables
 
 Drawing-wide image display settings stored in the named object dictionary.
@@ -246,22 +207,6 @@ DWF and DGN underlays follow the identical definition/reference pattern with swa
 | DWF | `DwfDefinition` | `DwfReference` | `ACAD_DWFDEFINITIONS` | Sheet name |
 | DGN | `DgnDefinition` | `DgnReference` | `ACAD_DGNDEFINITIONS` | Model name |
 
-## Underlay Common Properties
-
-All underlay references inherit from `UnderlayReference`:
-
-- `Position` (Point3d, get/set) — insertion point
-- `ScaleFactors` (Scale3d, get/set) — X, Y, Z scale factors
-- `Rotation` (double, get/set) — rotation angle in radians
-- `DefinitionId` (ObjectId, get/set) — link to the underlay definition
-- `IsOn` (bool, get/set) — visibility toggle
-- `IsMonochrome` (bool, get/set) — monochrome display
-- `AdjustContrast` (sbyte, get/set) — contrast (0-100)
-- `AdjustFade` (sbyte, get/set) — fade (0-100)
-- `IsClipped` (bool, get/set) — enable clipping
-- `ClipInverted` (bool, get/set) — invert clip region
-- `UnderlayLayerCount` (int, get) — number of layers in the underlay
-
 ### Underlay Clipping and Layer Filtering
 
 ```csharp
@@ -284,23 +229,6 @@ for (int i = 0; i < pdfRef.UnderlayLayerCount; i++)
 ## OLE Objects (Ole2Frame)
 
 OLE objects embed or link external documents (Excel, Word, images) in the drawing. The .NET API cannot create new OLE objects programmatically; use COM automation or `SendStringToExecute` with the `INSERTOBJ` command instead.
-
-### Ole2Frame Properties
-
-- `Position3d` (Point3d, get/set) — WCS coordinates of the four corners
-- `Location` (Point3d, get/set) — lower-left corner of the OLE display rectangle
-- `LinkPath` (string, get) — file path if linked; empty if embedded
-- `Type` (Ole2Frame.ItemType, get) — Link, Embedded, or Static
-- `UserType` (string, get) — display type string (e.g., "Paintbrush Bitmap")
-- `OutputQuality` (OleOutputQuality, get/set) — LineArt=0, Text=1, Graphics=2, Photo=3, HighPhoto=4
-- `AutoOutputQuality` (bool, get/set) — automatic plot quality selection
-- `WcsWidth` (double, get/set) — width in WCS drawing units
-- `WcsHeight` (double, get/set) — height in WCS drawing units
-- `ScaleWidth` (double, get/set) — scale relative to original size
-- `ScaleHeight` (double, get/set) — scale relative to original size
-- `LockAspect` (bool, get/set) — maintain aspect ratio
-- `Rotation` (double, get/set) — rotation angle in radians
-- `IsLinked` (bool, get) — true if object is linked rather than embedded
 
 ### Iterating OLE Objects
 

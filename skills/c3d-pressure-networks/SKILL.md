@@ -58,12 +58,6 @@ foreach (ObjectId netId in networkIds)
 
 ## Pressure Network Properties
 
-- Name (string, get/set) — network display name
-- Description (string, get/set) — user description
-- PartsListId (ObjectId, get/set) — pressure parts list governing available sizes
-- ReferenceAlignmentId (ObjectId, get/set) — alignment for station/offset reporting; may be `ObjectId.Null`
-- ReferenceSurfaceId (ObjectId, get/set) — surface for cover depth calculations; may be `ObjectId.Null`
-
 ```csharp
 PressurePipeNetwork pn = ts.GetObject(netId, OpenMode.ForRead) as PressurePipeNetwork;
 
@@ -74,20 +68,6 @@ ObjectId refSurfaceId = pn.ReferenceSurfaceId;
 ```
 
 ## Pressure Pipes
-
-### PressurePipe Properties
-
-- Name (string, get/set) — pipe display name
-- Length (double, get) — pipe centerline length
-- InnerDiameter (double, get) — inside diameter
-- OuterDiameter (double, get) — outside diameter
-- Material (string, get) — pipe material description
-- StartPoint (Point3d, get/set) — start coordinate
-- EndPoint (Point3d, get/set) — end coordinate
-- Slope (double, get) — rise/run ratio
-- PressureRating (double, get) — maximum operating pressure
-- StartConnection (ObjectId, get) — fitting/appurtenance at start
-- EndConnection (ObjectId, get) — fitting/appurtenance at end
 
 ```csharp
 ObjectIdCollection pipeIds = pn.GetPipeIds();

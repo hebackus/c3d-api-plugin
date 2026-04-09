@@ -20,65 +20,19 @@ description: Quick reference for Civil 3D .NET API classes - instant class looku
 
 **Main Civil 3D objects** - Alignments, Surfaces, Profiles, Pipe Networks, etc.
 
-**Key Classes:**
-- `Alignment` - Horizontal/vertical alignments
-- `Surface` - TIN/Grid/Volume surfaces
-- `TinSurface`, `GridSurface`, `TinVolumeSurface`
-- `Profile` - Vertical profiles
-- `ProfileView` - Profile view drawings
-- `Network` - Gravity pipe networks
-- `PressurePipeNetwork` - Pressure pipe networks
-- `Pipe`, `Structure` - Gravity network parts
-- `PressurePipe`, `PressureFitting`, `PressureAppurtenance` - Pressure parts
-- `Corridor` - Corridor models
-- `Assembly` - Assembly definitions
-- `Subassembly` - Subassembly components
-- `FeatureLine` - Feature line objects
-- `CogoPoint` - Survey/COGO points
-- `PointGroup` - Point group collections
-- `Catchment` - Catchment areas
-- `Parcel` - Parcel objects
-- `SampleLine`, `SampleLineGroup` - Cross sections
-
-**Label Classes:**
-- `AlignmentLabel`, `SurfaceLabel`, `ProfileLabel`
-- `PipeLabel`, `StructureLabel`
-- `GeneralNoteLabel`, `CurveLabel`, `LineLabel`
-
 ### Autodesk.Civil.DatabaseServices.Styles (163 classes)
 
 **Styles for all Civil 3D objects**
-
-**Key Styles:**
-- `AlignmentStyle`, `ProfileStyle`, `SurfaceStyle`
-- `PipeStyle`, `StructureStyle`
-- `CorridorStyle`, `AssemblyStyle`
-- `LabelStyle`, `LabelStyleComponent`
-- `MarkerStyle`, `ProfileViewStyle`
 
 ### Autodesk.Civil (241 classes)
 
 **Core types, enumerations, exceptions**
 
-**Key Types:**
-- `CivilException` - Base exception type
-- `Property*` classes - For accessing object properties
-- Enumerations for all option types
-- `Constant` - API constants
-
 ### Autodesk.Civil.Settings (86 classes)
 
 **Drawing and object settings**
 
-**Key Classes:**
-- `SettingsRoot` - Root settings access
-- `SettingsAlignment`, `SettingsSurface`, `SettingsProfile`
-- `SettingsPipeNetwork`, `SettingsCorridor`
-- `SettingsDrawing` - Drawing-level settings
-
 ### Autodesk.Civil.ApplicationServices (1 class)
-
-- `CivilApplication` - Main application object
 
 ## Common Patterns
 

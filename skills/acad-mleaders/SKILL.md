@@ -78,54 +78,6 @@ mleader.AddFirstVertex(lineIdx, new Point3d(200, 200, 0));
 mleader.AddLastVertex(lineIdx, new Point3d(100, 100, 0));
 ```
 
-## MLeader Properties
-
-**Content properties:**
-- `ContentType` (ContentType, get/set) - NoneContent=0, BlockContent=1, MTextContent=2, ToleranceContent=3
-- `MText` (MText, get/set) - the MText content object
-- `TextLocation` (Point3d, get/set) - text position
-- `TextHeight` (double, get/set)
-- `TextColor` (Color, get/set)
-- `TextStyleId` (ObjectId, get/set)
-- `TextAlignmentType` (TextAlignmentType, get/set) - LeftAlignment=0, CenterAlignment=1, RightAlignment=2
-- `TextAngleType` (TextAngleType, get/set) - InsertAngle=0, HorizontalAngle=1, AlwaysRightReadingAngle=2
-- `TextAttachmentType` (TextAttachmentType, get/set) - see enum below
-- `TextAttachmentDirection` (TextAttachmentDirection, get/set) - AttachmentHorizontal=0, AttachmentVertical=1
-- `EnableFrameText` (bool, get/set)
-- `EnableAnnotationScale` (bool, get/set)
-
-**Block properties:**
-- `BlockContentId` (ObjectId, get/set)
-- `BlockPosition` (Point3d, get/set)
-- `BlockConnectionType` (BlockConnectionType, get/set) - ConnectExtents=0, ConnectBase=1
-- `BlockRotation` (double, get/set)
-- `BlockScale` (Scale3d, get/set)
-- `BlockColor` (Color, get/set)
-
-**Leader line appearance:**
-- `LeaderLineType` (LeaderType, get/set) - InVisibleLeader=0, StraightLeader=1, SplineLeader=2
-- `LeaderLineColor` (Color, get/set)
-- `LeaderLineTypeId` (ObjectId, get/set) - linetype
-- `LeaderLineWeight` (LineWeight, get/set)
-- `ArrowSymbolId` (ObjectId, get/set) - arrow block
-- `ArrowSize` (double, get/set)
-
-**Leader configuration:**
-- `EnableDogleg` (bool, get/set)
-- `DoglegLength` (double, get/set)
-- `EnableLanding` (bool, get/set)
-- `LandingGap` (double, get/set)
-- `ExtendLeaderToText` (bool, get/set)
-
-**Counts (read-only):**
-- `LeaderCount` (int, get)
-- `LeaderLineCount` (int, get)
-
-**Other:**
-- `MLeaderStyle` (ObjectId, get/set)
-- `Scale` (double, get/set)
-- `Normal` (Vector3d, get)
-
 ## Leader and LeaderLine Management
 
 ```csharp
@@ -222,14 +174,6 @@ mleader.MoveMLeader(new Vector3d(50, 50, 0), MoveType.MoveAllPoints);
 
 **MoveType enum:** MoveAllPoints=0, MoveAllExceptArrowHeaderPoints=1, MoveContentAndDoglegPoints=2
 
-## Other Methods
-
-- `GetContentGeomExtents()` → `Extents3d` - bounding box of content
-- `ConnectionPoint(Vector3d direction)` → `Point3d` - calculate connection point
-- `ConnectionPoint(Vector3d direction, TextAttachmentDirection)` → `Point3d`
-- `HasContent()` → bool
-- `PostMLeaderToDb(Database db)` - post to database
-
 ## MLeaderStyle
 
 ```csharp
@@ -286,18 +230,6 @@ ObjectId styleId = style.PostMLeaderStyleToDb(db, "My Leader Style");
 tr.AddNewlyCreatedDBObject(style, true);
 ```
 
-**MLeaderStyle properties** mirror MLeader properties and serve as defaults. Notable additions:
-- `Name` (string, get/set)
-- `TextAlignAlwaysLeft` (bool, get/set)
-- `DefaultMText` (MText, get/set) - template MText
-- `EnableBlockScale` (bool, get/set)
-- `EnableBlockRotation` (bool, get/set)
-- `BreakSize` (double, get/set)
-- `MaxLeaderSegmentsPoints` (int, get/set)
-- `FirstSegmentAngleConstraint` / `SecondSegmentAngleConstraint` (AngleConstraint, get/set)
-- `DrawLeaderOrderType` (DrawLeaderOrderType, get/set)
-- `DrawMLeaderOrderType` (DrawMLeaderOrderType, get/set)
-
 ## Enums
 
 **TextAttachmentType:** AttachmentTopOfTop=0, AttachmentMiddleOfTop=1, AttachmentMiddle=2, AttachmentMiddleOfBottom=3, AttachmentBottomOfBottom=4, AttachmentBottomLine=5, AttachmentBottomOfTopLine=6, AttachmentBottomOfTop=7, AttachmentAllLine=8, AttachmentCenter=9, AttachmentLinedCenter=10
@@ -348,22 +280,6 @@ using (Transaction tr = db.TransactionManager.StartTransaction())
     tr.Commit();
 }
 ```
-
-**Leader properties:**
-- `HasArrowHead` (bool, get/set)
-- `IsSplined` (bool, get/set) - spline leader
-- `Annotation` (ObjectId, get/set) - attached annotation object
-- `AnnoType` (LeaderAnnoType, get-only) - None=0, MText=1, BlockReference=2, Tolerance=3
-- `AnnoOffset` (Vector3d, get/set) - annotation offset
-- `AnnoHeight` / `AnnoWidth` (double, get-only) - annotation size
-- `Normal` (Vector3d, get/set)
-- `NumVertices` (int, get-only)
-
-**Leader methods:**
-- `AppendVertex(Point3d)` - add vertex
-- `RemoveLastVertex()` - remove last vertex
-- `VertexAt(int index)` → `Point3d`
-- `EvaluateLeader()` - recalculate hook line geometry (**required** after setting Annotation)
 
 ## Gotchas
 

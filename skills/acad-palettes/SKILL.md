@@ -33,46 +33,6 @@ Community-reported constructor (not officially documented):
 
 `AddVisual` is the preferred approach for WPF content in modern plugins. It avoids the WinForms UserControl + ElementHost wrapper that `Add(string, Control)` requires.
 
-### High-Value Members
-
-| Member | Type | Purpose |
-| --- | --- | --- |
-| `Name` | `string` | Window caption / palette-set name |
-| `Visible` | `bool` | Show or hide the palette set |
-| `KeepFocus` | `bool` | Whether the palette retains input focus when AutoCAD requests it back |
-| `Dock` | `DockSides` (read-only) | Current docking side |
-| `DockEnabled` | `DockSides` | Which docking sides the user may use |
-| `Style` | `PaletteSetStyles` | Style flags (close button, auto-hide, etc.) |
-| `Location` | `System.Drawing.Point` | Floating palette position |
-| `Size` | `System.Drawing.Size` | Current palette size |
-| `MinimumSize` | `System.Drawing.Size` | Minimum allowed size |
-| `AutoRollUp` | `bool` | Enable/disable auto-roll-up behavior |
-| `TitleBarLocation` | `PaletteSetTitleBarLocation` | Title-bar placement |
-| `SetThemedIcon(Icon, ColorThemeEnum)` | method | Theme-aware icon assignment |
-
-DPI-oriented members: `DeviceIndependentLocation`, `DeviceIndependentSize`, `DeviceIndependentMinimumSize`.
-
-Caption-icon properties: `LightThemedIcon`, `DarkThemedIcon`, `LargeLightThemedIcon`, `LargeDarkThemedIcon`.
-
-### Events and Persistence Hooks
-
-- `Focused` -- palette received focus
-- `PaletteActivated` -- a palette tab was activated
-- `Load` -- palette-set data loaded from XML (persistence restore)
-- `Save` -- palette-set data saved to XML (persistence store)
-- `SizeChanged` -- palette resized
-- `StateChanged` -- show/hide/roll-up state changed
-- `PaletteSetHostMoved` -- host window moved
-
-Key event-argument members:
-
-- `PalettePersistEventArgs.ConfigurationSection` -- the XML configuration section during `Load`/`Save`
-- `PaletteSetStateEventArgs.NewState` -- identifies which state changed during `StateChanged`
-
-### Theming
-
-Theme-based icon APIs supersede older icon methods. Use `SetThemedIcon(...)` or the themed icon properties (`LightThemedIcon`, `DarkThemedIcon`) for light/dark theme fidelity.
-
 ### Example: WinForms Palette Singleton
 
 ```csharp
@@ -303,25 +263,6 @@ public sealed class PaletteLifecycleModule : IExtensionApplication
 
 The Tool Palette API lives in the `Autodesk.AutoCAD.Windows.ToolPalette` namespace (`AcMgd.dll`, `AcTcMgd.dll`). It is the managed wrapper layer over `AcTc*` ObjectARX classes -- **not** the same as `PaletteSet`.
 
-### Key Types
-
-- `ToolPaletteManager` -- main entry point
-- `Catalog`, `CatalogItem`, `CatalogItemCollection` -- catalog model
-- `Palette` -- a tool palette within the Tool Palettes window (distinct from `Autodesk.AutoCAD.Windows.Palette`)
-- `Tool`, `StockTool` -- individual tool definitions
-- `Scheme`, `SchemeCollection` -- palette schemes
-
-### ToolPaletteManager Members
-
-- `ToolPaletteManager.Manager` -- static property returning the active manager
-- `CatalogPath` -- absolute paths to workspace-catalog storage (semicolon-separated)
-- `StockToolCatalogs` -- access to loaded stock-tool catalogs
-- `Schemes` -- access to tool-palette schemes
-- `LoadCatalogs(CatalogTypeFlags, LoadFlags)` -- loads workspace and stock-tool catalogs (discards currently loaded)
-- `SaveCatalogs(CatalogTypeFlags, SaveFlags)` -- saves workspace and stock-tool catalogs
-- `UnloadCatalogs(CatalogTypeFlags)` -- unloads workspace and stock-tool catalogs
-- `GetShapePackage(string)` -- looks up a shape package in the shape catalog
-
 ### Runtime Model
 
 Tool palettes are catalog-backed. Your application creates catalog, palette, and tool content once; AutoCAD saves it to ATC files with a path to your module. The Tool Palette framework loads your application when the Tool Palettes window initializes. This is fundamentally different from `PaletteSet`:
@@ -374,14 +315,6 @@ The Properties Palette (Property Inspector) is a COM-based module for inspecting
 - Customize the Properties palette UI
 - Display properties for a custom command
 - Add custom tabs to the Properties palette
-
-### Key Interfaces (ObjectARX/COM)
-
-- `IOPMPropertyExtension` -- custom property exposure
-- `IOPMPropertyDialog` -- custom property dialog
-- `IPerPropertyBrowsing` -- per-property browsing customization
-- `IAcPiCategorizeProperties` -- property categorization
-- `IAcPiPropertyDisplay` -- property display customization
 
 ### When to Use
 

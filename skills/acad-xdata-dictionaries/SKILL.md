@@ -274,11 +274,6 @@ public static ResultBuffer ReadExtensionData(Entity ent, Transaction tr,
 
 An `Xrecord` stores a `ResultBuffer` inside a `DBDictionary`. It has no size limit (unlike XData's 16 KB cap) and supports any `DxfCode` values.
 
-### XRecord Properties and Methods
-
-- `Data` (ResultBuffer, get/set) — the stored data payload
-- `XlateReferences` (XlateType, get/set) — controls how ObjectId references translate during copy/merge operations
-
 ### Storing Complex Data in an XRecord
 
 ```csharp
@@ -303,15 +298,6 @@ public static void StoreComplexRecord(DBDictionary dict, Transaction tr,
 ## DBDictionary Operations
 
 `DBDictionary` is the container for XRecords and nested dictionaries. Both the NOD and Extension Dictionaries are `DBDictionary` instances.
-
-### Key Methods
-
-- `Contains(string key)` -> bool — check if a key exists
-- `GetAt(string key)` -> ObjectId — get the ObjectId for a key
-- `SetAt(string key, DBObject obj)` -> ObjectId — add or replace an entry
-- `Remove(string key)` — remove an entry by key
-- `Remove(ObjectId id)` — remove an entry by ObjectId
-- `Count` (int, get) — number of entries
 
 ### Iterating a Dictionary
 

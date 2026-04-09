@@ -33,13 +33,6 @@ using (Transaction ts = db.TransactionManager.StartTransaction())
 
 ## Intersection Properties
 
-- Name (string, get/set) — display name
-- Description (string, get/set) — user description
-- StyleId (ObjectId, get/set) — intersection display style
-- Location (Point2d, get) — 2D point where alignments cross
-- RoadwayAlignmentId (ObjectId, get) — main road alignment
-- CorridorId (ObjectId, get) — parent corridor (if created within a corridor)
-
 ```csharp
 Intersection ix = ts.GetObject(intId, OpenMode.ForRead) as Intersection;
 
@@ -122,14 +115,6 @@ foreach (ObjectId crId in curbReturnIds)
     ed.WriteMessage("Curb return: {0}\n", cr.Name);
 }
 ```
-
-### Curb Return Properties
-
-Curb return properties (radius, widening, fillet type) are configured during creation through the wizard. The .NET API provides read access to the resulting alignment and profile objects.
-
-- Name (string, get) — curb return display name
-- AlignmentId (ObjectId, get) — the curb return alignment entity
-- ProfileId (ObjectId, get) — profile along the curb return
 
 ```csharp
 CurbReturn cr = ts.GetObject(crId, OpenMode.ForRead) as CurbReturn;

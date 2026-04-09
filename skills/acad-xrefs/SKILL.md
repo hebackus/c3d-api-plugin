@@ -281,18 +281,6 @@ Autodesk.AutoCAD.ApplicationServices.Application.SetSystemVariable("XLOADCTL", 2
 
 - `XLOADCTL = 2` is recommended for multi-user environments — allows others to edit the xref while it is referenced.
 
-## BlockTableRecord Xref Properties
-
-Key properties on `BlockTableRecord` for xref inspection:
-
-- `IsFromExternalReference` (bool, get) — true if this BTR represents an xref (attachment or overlay)
-- `IsFromOverlayReference` (bool, get/set) — true if overlay mode; false if attachment mode. Writable to change mode after attach.
-- `IsUnloaded` (bool, get/set) — true if the xref is currently unloaded
-- `IsResolved` (bool, get) — true if AutoCAD successfully found and loaded the xref file
-- `XrefStatus` (XrefStatus, get) — current status enum value
-- `PathName` (string, get/set) — stored file path for the xref
-- `IsDependent` (bool, get) — true if this BTR came in through an xref (xref-dependent symbol)
-
 ### XrefStatus Enum Values
 
 - `NotAnXref` — BTR is a regular block, not an xref
@@ -408,17 +396,6 @@ public static void AnalyzeXrefDependencies(Database db)
     }
 }
 ```
-
-### XrefGraphNode Properties
-
-- `Name` (string, get) — block name of the xref
-- `BlockTableRecordId` (ObjectId, get) — ObjectId of the corresponding BTR
-- `IsNested` (bool, get) — true if this xref is nested inside another xref
-- `XrefStatus` (XrefStatus, get) — resolution status of this node
-- `NumIn` (int, get) — number of incoming edges (parents referencing this xref)
-- `NumOut` (int, get) — number of outgoing edges (xrefs nested inside this one)
-- `In(int)` — get parent node at index
-- `Out(int)` — get child node at index
 
 ### Detecting Circular References
 

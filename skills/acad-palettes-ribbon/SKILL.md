@@ -51,31 +51,6 @@ public void ShowMyPalette()
 }
 ```
 
-### PaletteSet Properties
-
-- `Name` (string, get/set) -- display name in the title bar
-- `Style` (PaletteSetStyles, get/set) -- combination of style flags
-- `DockEnabled` (DockSides, get/set) -- allowed dock sides
-- `Dock` (DockSides, get/set) -- current dock position
-- `Visible` (bool, get/set) -- show or hide the palette set
-- `Opacity` (int, get/set) -- transparency 0-100
-- `Size` (System.Drawing.Size, get/set) -- current size
-- `MinimumSize` (System.Drawing.Size, get/set) -- minimum allowed size
-- `KeepFocus` (bool, get/set) -- retain focus when clicking inside
-- `RolledUp` (bool, get/set) -- whether auto-hidden (rolled up)
-- `TitleBarLocation` (PaletteSetTitleBarLocation, get/set) -- title bar position
-- `Activate(int index)` -- activate a specific palette tab by index
-
-### PaletteSetStyles Flags
-
-- `ShowPropertiesMenu` -- right-click context menu with palette list
-- `ShowAutoHideButton` -- auto-hide pin button
-- `ShowCloseButton` -- close button in title bar
-- `ShowTabForSingle` -- show tab strip even with one palette
-- `Snappable` -- snap to edges when floating
-- `UsePaletteNameAsTitleForSingle` -- use palette name as title when single tab
-- `NameEditable` -- allow renaming via title bar
-
 ### Adding WPF Content via ElementHost
 
 ```csharp
@@ -135,14 +110,6 @@ private void OnDockStateChanged(object sender, EventArgs e)
     // Adjust layout based on dock state if needed
 }
 ```
-
-### Dock States
-
-- `DockSides.None` -- floating
-- `DockSides.Left` -- docked to the left
-- `DockSides.Right` -- docked to the right
-- `DockSides.Top` -- docked to the top (rarely used)
-- `DockSides.Bottom` -- docked to the bottom (rarely used)
 
 ### PaletteSet Persistence
 
@@ -390,23 +357,6 @@ rowPanel.Items.Add(btn2);
 
 panelSource.Items.Add(rowPanel);
 ```
-
-### Ribbon Item Properties Summary
-
-- `Text` (string) -- display text
-- `ShowText` (bool) -- show text label
-- `ShowImage` (bool) -- show icon
-- `Image` (ImageSource) -- 16x16 small icon
-- `LargeImage` (ImageSource) -- 32x32 large icon
-- `Size` (RibbonItemSize) -- `Standard` (small) or `Large`
-- `Orientation` (Orientation) -- `Vertical` or `Horizontal` text/icon layout
-- `Id` (string) -- unique identifier
-- `ToolTip` (object) -- tooltip (string or RibbonToolTip)
-- `KeyTip` (string) -- keyboard accelerator
-- `IsEnabled` (bool) -- enabled state
-- `IsVisible` (bool) -- visibility
-- `CommandParameter` (object) -- command string for handler
-- `CommandHandler` (ICommand) -- executes on click
 
 ## Application Menu
 

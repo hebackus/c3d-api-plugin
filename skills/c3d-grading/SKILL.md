@@ -45,20 +45,6 @@ foreach (ObjectId ggId in gradingGroupIds)
 }
 ```
 
-## GradingGroup Properties
-
-- Name (string, get/set) — group display name
-- SiteId (ObjectId, get) — parent site
-- SurfaceId (ObjectId, get) — associated TIN surface (if automatic surface creation is enabled)
-- AutomaticSurfaceCreation (bool, get/set) — whether to auto-create a TIN surface from grading objects
-- VolumeBaselineSurfaceId (ObjectId, get/set) — base surface for volume computation
-- StyleId (ObjectId, get/set) — grading group style
-
-## GradingGroup Methods
-
-- GetGradingIds() → ObjectIdCollection — all grading ObjectIds in the group
-- Update() → void — rebuild grading group and regenerate surface
-
 ## Creating a Grading Group
 
 ```csharp
@@ -100,16 +86,6 @@ points.Add(new Point3d(100, 100, 100));
 points.Add(new Point3d(0, 100, 100));
 ObjectId flId = FeatureLine.Create("Footprint", points, siteId);
 ```
-
-### FeatureLine Properties
-
-- Name (string, get/set) — display name
-- SiteId (ObjectId, get) — parent site
-- MaxElevation (double, get) — highest vertex elevation
-- MinElevation (double, get) — lowest vertex elevation
-- Length2D (double, get) — planimetric length
-- Length3D (double, get) — 3D length including elevation changes
-- StyleId (ObjectId, get/set) — feature line style
 
 ### FeatureLine Elevation Methods
 
@@ -153,18 +129,6 @@ fl.RaiseElevations(-1.5);  // lower by 1.5 feet
 ## Grading Criteria
 
 Grading criteria define the projection rule: target type, slope format, cut/fill slopes, and search order. They are style objects stored in criteria sets.
-
-### GradingCriteria Properties
-
-- Target (GradingTargetType, get/set) — projection target type (must be set before CutSlope/FillSlope)
-- SearchOrder (GradingSearchOrderType, get/set) — cut-first or fill-first
-- Slope (double, get/set) — slope value when Target is Distance or Elevation
-- CutSlope (double, get/set) — slope for cut condition (when Target is Surface)
-- FillSlope (double, get/set) — slope for fill condition (when Target is Surface)
-- SlopeFormatType (GradingSlopeFormatType, get/set) — how slope values are expressed
-- Distance (double, get/set) — target distance (when Target is Distance)
-- RelativeElevation (double, get/set) — elevation offset (when Target is RelativeElevation)
-- InteriorCornerOverlap (GradingInteriorCornerOverlapType, get/set) — interior corner handling
 
 ### GradingTargetType Values
 - `Surface` — project to a target surface (daylight)
@@ -258,14 +222,6 @@ Grading grading = Grading.Create(
     targetSurfaceId,   // target surface (for daylight; ObjectId.Null for non-surface targets)
     true);             // grade to exterior (true) or interior (false)
 ```
-
-### Grading Properties
-
-- GradingGroupId (ObjectId, get) -- parent grading group
-- FeatureLineId (ObjectId, get) -- footprint feature line
-- GradingCriteriaId (ObjectId, get/set) -- the criteria used for projection
-- TargetSurfaceId (ObjectId, get/set) -- target surface for daylight grading
-- IsExterior (bool, get) -- whether grading projects outward
 
 ### Updating Gradings
 

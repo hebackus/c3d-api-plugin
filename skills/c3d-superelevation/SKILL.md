@@ -115,13 +115,6 @@ foreach (int i in Enum.GetValues(typeof(SuperelevationCrossSegmentType)))
 
 Critical stations mark key points in the superelevation transition. Each curve generates a set of these stations.
 
-### SuperelevationCriticalStation Properties
-
-- Station (double, get) — station value on the alignment
-- StationType (enum, get) — type of critical station (see below)
-- TransitionRegionType (enum, get) — which transition region this belongs to
-- GetSlope(SuperelevationCrossSegmentType) → double — cross slope for a specific segment
-
 ### Station Types
 
 The `StationType` property identifies where in the transition this station falls:

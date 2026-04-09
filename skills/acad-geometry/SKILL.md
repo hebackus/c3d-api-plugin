@@ -10,11 +10,6 @@ Use this skill when working with geometric primitives - points, vectors, matrice
 ## Points
 
 ### Point2d (struct)
-- Constructors: `Point2d(double x, double y)`, `Point2d(double[] xy)`
-- Static: `Point2d.Origin`
-- Properties: `X`, `Y` (double, get-only), indexer `[int i]`
-- Key methods: `GetDistanceTo(Point2d)`, `GetVectorTo(Point2d)`, `GetAsVector()`, `TransformBy(Matrix2d)`, `RotateBy(double angle, Point2d origin)`, `Mirror(Line2d)`, `ScaleBy(double, Point2d)`, `Add(Vector2d)`, `Subtract(Vector2d)`, `MultiplyBy(double)`, `DivideBy(double)`, `IsEqualTo(Point2d)`, `IsEqualTo(Point2d, Tolerance)`, `ToArray()`
-- Operators: `Point2d + Vector2d -> Point2d`, `Point2d - Vector2d -> Point2d`, `Point2d - Point2d -> Vector2d`, `Matrix2d * Point2d -> Point2d`, `Point2d * double -> Point2d`, `double * Point2d -> Point2d`, `Point2d / double -> Point2d`, `==`, `!=`
 
 ```csharp
 Point2d p1 = new Point2d(100.0, 200.0);
@@ -26,11 +21,6 @@ Point2d rotated = p1.RotateBy(Math.PI / 4, Point2d.Origin);
 ```
 
 ### Point3d (struct)
-- Constructors: `Point3d(double x, double y, double z)`, `Point3d(double[] xyz)`, `Point3d(PlanarEntity plane, Point2d point)`
-- Static: `Point3d.Origin`
-- Properties: `X`, `Y`, `Z` (double, get-only), indexer `[int i]`
-- Key methods: `DistanceTo(Point3d)` (NOTE: not GetDistanceTo like Point2d!), `GetVectorTo(Point3d)`, `GetAsVector()`, `TransformBy(Matrix3d)`, `RotateBy(double angle, Vector3d axis, Point3d centerPoint)`, `ScaleBy(double, Point3d)`, `Add(Vector3d)`, `Subtract(Vector3d)`, `MultiplyBy(double)`, `DivideBy(double)`, `Convert2d(PlanarEntity)`, `OrthoProject(Plane)`, `Project(Plane, Vector3d)`, `Mirror(Plane)`, `IsEqualTo(Point3d)`, `IsEqualTo(Point3d, Tolerance)`, `ToArray()`
-- Operators: same pattern as Point2d but with Vector3d/Matrix3d
 
 ```csharp
 Point3d p1 = new Point3d(100.0, 200.0, 0.0);
@@ -43,18 +33,7 @@ Point2d flat = p1.Convert2d(new Plane());  // project to XY plane
 
 ## Vectors
 
-### Vector2d (struct)
-- Constructors: `Vector2d(double x, double y)`, `Vector2d(double[] xy)`
-- Static: `Vector2d.XAxis`, `Vector2d.YAxis`
-- Properties: `X`, `Y`, `Angle`, `Length`, `LengthSqrd` (all get-only)
-- Key methods: `GetNormal()`, `GetNormal(Tolerance)`, `GetAngleTo(Vector2d)`, `GetPerpendicularVector()`, `DotProduct(Vector2d)`, `RotateBy(double)`, `Mirror(Vector2d)`, `Negate()`, `Add(Vector2d)`, `Subtract(Vector2d)`, `MultiplyBy(double)`, `DivideBy(double)`, `IsParallelTo(Vector2d)`, `IsPerpendicularTo(Vector2d)`, `IsCodirectionalTo(Vector2d)`, `IsUnitLength()`, `IsZeroLength()`, `IsEqualTo(Vector2d)` (all comparison methods have Tolerance overloads)
-- Operators: `+`, unary `-`, binary `-`, `*` (Matrix2d, double), `/`
-
-### Vector3d (struct)
-- Constructors: `Vector3d(double x, double y, double z)`, `Vector3d(double[] xyz)`, `Vector3d(PlanarEntity plane, Vector2d vector2d)`
-- Static: `Vector3d.XAxis`, `Vector3d.YAxis`, `Vector3d.ZAxis`
-- Properties: `X`, `Y`, `Z`, `Length`, `LengthSqrd`, `LargestElement` (all get-only)
-- Key methods: all of Vector2d's methods plus `CrossProduct(Vector3d)`, `GetAngleTo(Vector3d)`, `GetAngleTo(Vector3d, Vector3d referenceVector)`, `Convert2d(PlanarEntity)`, `AngleOnPlane(PlanarEntity)`, `ProjectTo(Vector3d planeNormal, Vector3d projectDirection)`, `OrthoProjectTo(Vector3d planeNormal)`
+### Vector2d / Vector3d (structs)
 
 ```csharp
 Vector3d v1 = new Vector3d(1.0, 0.0, 0.0);
@@ -69,25 +48,7 @@ bool parallel = v1.IsParallelTo(v2);         // false
 
 ## Transformations
 
-### Matrix3d (struct)
-- Constructor: `Matrix3d(double[] data)` (16 elements, row-major)
-- Static: `Matrix3d.Identity`
-- Properties: `Translation` (Vector3d), `CoordinateSystem3d`, indexer `[int row, int column]`
-- Factory methods (all static):
-  - `Matrix3d.Displacement(Vector3d vector)`
-  - `Matrix3d.Rotation(double angle, Vector3d axis, Point3d center)`
-  - `Matrix3d.Scaling(double scaleAll, Point3d center)`
-  - `Matrix3d.Mirroring(Point3d point)`, `Mirroring(Plane plane)`, `Mirroring(Line3d line)`
-  - `Matrix3d.WorldToPlane(Vector3d normal)`, `WorldToPlane(Plane plane)`
-  - `Matrix3d.PlaneToWorld(Vector3d normal)`, `PlaneToWorld(Plane plane)`
-  - `Matrix3d.Projection(Plane projectionPlane, Vector3d projectDir)`
-  - `Matrix3d.AlignCoordinateSystem(Point3d fromOrigin, Vector3d fromXAxis, Vector3d fromYAxis, Vector3d fromZAxis, Point3d toOrigin, Vector3d toXAxis, Vector3d toYAxis, Vector3d toZAxis)`
-- Methods: `Inverse()`, `Transpose()`, `PreMultiplyBy(Matrix3d)`, `PostMultiplyBy(Matrix3d)`, `GetDeterminant()`, `GetScale()`, `IsSingular()`, `IsScaledOrtho()`, `IsUniscaledOrtho()`, `IsEqualTo(Matrix3d)` (with Tolerance overloads)
-- Operators: `Matrix3d * Matrix3d -> Matrix3d`, `==`, `!=`
-
-### Matrix2d (struct)
-- Same pattern as Matrix3d but 2D
-- Factory methods: `Displacement(Vector2d)`, `Rotation(double angle, Point2d center)`, `Scaling(double, Point2d)`, `Mirroring(Line2d)`, `Mirroring(Point2d)`, `AlignCoordinateSystem(Point2d fromOrigin, Vector2d fromE0, Vector2d fromE1, Point2d toOrigin, Vector2d toE0, Vector2d toE1)`
+### Matrix3d / Matrix2d (structs)
 
 ```csharp
 // Rotate entity 45 degrees around a point
@@ -112,17 +73,7 @@ Matrix3d move = Matrix3d.Displacement(new Vector3d(50, 100, 0));
 
 ## Lines & Segments
 
-### Line2d / Line3d (infinite lines)
-- Constructors: `Line2d()`, `Line2d(Point2d p1, Point2d p2)`, `Line2d(Point2d point, Vector2d direction)` (same pattern for Line3d)
-- Inherited from LinearEntity2d/3d: `Direction` (Vector2d/3d), `PointOnLine` (Point2d/3d)
-- Methods (from LinearEntity): `IntersectWith(LinearEntity)` -> `Point2d[]`/`Point3d[]`, `IsParallelTo(LinearEntity)`, `IsPerpendicularTo(LinearEntity)`, `IsColinearTo(LinearEntity)`, `GetPerpendicularLine(Point2d)`/`GetPerpendicularPlane(Point3d)`, `Overlap(LinearEntity)`, `GetLine()`
-- Line3d additional: `IntersectWith(PlanarEntity)`, `IsParallelTo(PlanarEntity)`, `IsPerpendicularTo(PlanarEntity)`
-
-### LineSegment2d / LineSegment3d (bounded segments)
-- Constructors: `LineSegment2d(Point2d p1, Point2d p2)`, `LineSegment2d(Point2d point, Vector2d direction)` (same for 3d)
-- Properties: `StartPoint`, `EndPoint`, `MidPoint` (Point2d/3d), `Length` (double)
-- Methods: `GetBisector()` -> Line2d/Plane, `BaryComb(double blendCoefficient)` -> Point, `Set(...)` (multiple overloads)
-- Inherits all LinearEntity methods (IntersectWith, IsParallelTo, etc.)
+### Lines and Segments
 
 ```csharp
 // Find intersection of two lines
@@ -141,15 +92,7 @@ double len = seg.Length;        // 100.0
 
 ## Arcs & Circles
 
-### CircularArc2d
-- Constructors: `CircularArc2d(Point2d center, double radius)`, `CircularArc2d(Point2d center, double radius, double startAngle, double endAngle, Vector2d referenceVector, bool isClockWise)`, `CircularArc2d(Point2d startPoint, Point2d pointOnArc, Point2d endPoint)` (3-point), `CircularArc2d(Point2d startPoint, Point2d endPoint, double bulge, bool bulgeFlag)`
-- Properties: `Center` (get/set), `Radius` (get/set), `StartAngle`, `EndAngle` (get), `IsClockWise` (get), `StartPoint`, `EndPoint`, `ReferenceVector` (get/set)
-- Methods: `IntersectWith(LinearEntity2d)` -> `Point2d[]`, `IntersectWith(CircularArc2d)` -> `Point2d[]`, `GetTangent(Point2d)` -> `Line2d`, `IsInside(Point2d)`, `SetAngles(double, double)`, `SetToComplement()`
-
-### CircularArc3d
-- Constructors: `CircularArc3d(Point3d center, Vector3d normal, double radius)`, `CircularArc3d(Point3d center, Vector3d normal, Vector3d referenceVector, double radius, double startAngle, double endAngle)`, `CircularArc3d(Point3d startPoint, Point3d pointOnArc, Point3d endPoint)` (3-point)
-- Properties: same as 2d plus `Normal` (Vector3d, get)
-- Methods: same as 2d plus `IntersectWith(PlanarEntity)`, `ClosestPointToPlane(PlanarEntity)`, `ProjectedIntersectWith(LinearEntity3d, Vector3d)`, `GetPlane()`
+### CircularArc2d / CircularArc3d
 
 ```csharp
 // Create arc through 3 points
@@ -169,34 +112,7 @@ Line3d testLine = new Line3d(center, Vector3d.XAxis);
 Point3d[] hits = arc.IntersectWith(testLine);
 ```
 
-## Elliptical Arcs
-
-### EllipticalArc2d / EllipticalArc3d
-- Constructors: `EllipticalArc2d(Point2d center, Vector2d majorAxis, Vector2d minorAxis, double majorRadius, double minorRadius)`, with optional `double startAngle, double endAngle`, `EllipticalArc2d(CircularArc2d)` (convert from circle)
-- Properties: `Center` (get/set), `MajorRadius`/`MinorRadius` (get/set), `MajorAxis`/`MinorAxis` (get), `StartAngle`, `EndAngle` (get), `StartPoint`, `EndPoint`, `IsClockWise` (2d only)
-- Methods: `IntersectWith(LinearEntity)`, `IsCircular()`, `IsInside(Point)`, `SetAngles(double, double)`, `SetAxes(Vector, Vector)`
-- 3d adds: `Normal`, `GetPlane()`, `IntersectWith(PlanarEntity)`, `ClosestPointToPlane(PlanarEntity)`
-
 ## Curves (Abstract Base)
-
-### Curve2d / Curve3d (abstract)
-These are the base classes for all 2d/3d curve types. Key methods available on all curves:
-
-- Properties: `StartPoint`, `EndPoint`, `HasStartPoint`, `HasEndPoint`, `BoundBlock`, `OrthoBoundBlock`
-- Methods:
-  - `GetInterval()` -> `Interval`, `SetInterval(Interval)`
-  - `GetLength(double fromParam, double toParam)` / `GetLength(double, double, Tolerance)` (Curve3d signature: `GetLength(double, double, double tolerance)`)
-  - `GetDistanceTo(Point)`, `GetDistanceTo(Curve)`
-  - `GetClosestPointTo(Point)` -> `PointOnCurve`, `GetClosestPointTo(Curve)` -> `PointOnCurve[]`
-  - `GetParameterOf(Point)`, `GetParameterAtLength(double datum, double length, bool direction)`
-  - `EvaluatePoint(double parameter)` -> Point
-  - `GetSamplePoints(int numSample)` -> `Point[]`, `GetSamplePoints(double from, double to, double approxEps)` -> `PointOnCurve[]`
-  - `GetTrimmedOffset(double distance, OffsetCurveExtensionType)` (Curve3d adds `Vector3d planeNormal` param)
-  - `IsClosed()`, `IsPeriodic(out double period)`, `IsLinear(out Line)`, `IsOn(Point)`, `IsOn(Point, out double param)`, `IsOn(double param)`
-  - `GetSplitCurves(double param)` -> `Curve[]`, `Explode(Interval)` -> `Curve[]`
-  - `GetArea(double startParam, double endParam)`
-  - `GetReverseParameterCurve()`
-- Curve3d additional: `IsPlanar(out Plane)`, `IsCoplanarWith(Curve3d, out Plane)`, `GetProjectedEntity(Plane, Vector3d)`, `GetOrthoProjectEntity(Plane)`, `GetProjectedClosestPointTo(Point3d, Vector3d)`, `GetNewSamplePoints(double, double, double)`
 
 ### CurveCurveIntersector2d / CurveCurveIntersector3d
 For finding intersections between ANY two curves:
@@ -222,23 +138,7 @@ int overlapCount = cci.OverlapCount;   // property on 2d, method on 3d
 
 Note: CurveCurveIntersector3d requires a `Vector3d planeNormal` parameter in all constructors (for projection direction).
 
-### CompositeCurve2d / CompositeCurve3d
-For combining multiple curves into one:
-- Constructor: `CompositeCurve2d(Curve2d[] curves)`, `CompositeCurve3d(Curve3d[] curves)`
-- Methods: `GetCurves()` -> `Curve[]`, `GlobalToLocalParameter(double)` -> `CompositeParameter`, `LocalToGlobalParameter(CompositeParameter)` -> `double`
-- CompositeCurve2d also has `SetCurves(Curve2d[])`
-
 ## Planes & Bounds
-
-### Plane
-- Constructors: `Plane()`, `Plane(Point3d origin, Vector3d normal)`, `Plane(Point3d p1, Point3d origin, Point3d p2)` (3-point), `Plane(Point3d origin, Vector3d u, Vector3d v)`, `Plane(double a, double b, double c, double d)` (equation coefficients)
-- Inherited from PlanarEntity: `GetNormal()` (or just `Normal`), `GetCoordinateSystem()`
-- Methods: `GetSignedDistanceTo(Point3d)`, `IntersectWith(Plane)` -> `Line3d`, `IntersectWith(BoundedPlane)` -> `LineSegment3d` (both have Tolerance overloads)
-
-### BoundBlock2d / BoundBlock3d (oriented bounding boxes)
-- Constructors: `BoundBlock2d(Point2d p1, Point2d p2)` (axis-aligned), `BoundBlock2d(Point2d basePoint, Vector2d dir1, Vector2d dir2)` (oriented)
-- Properties: `BasePoint`, `Direction1`, `Direction2` (3d adds `Direction3`), `IsBox` (get/set)
-- Methods: `GetMinimumPoint()`, `GetMaximumPoint()`, `Contains(Point)`, `IsDisjoint(BoundBlock)`, `Extend(Point)`, `Swell(double distance)`
 
 ### Extents2d / Extents3d (axis-aligned bounding boxes)
 **Namespace:** `Autodesk.AutoCAD.DatabaseServices` (NOT `Autodesk.AutoCAD.Geometry` — easy to get wrong)
