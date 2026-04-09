@@ -1,6 +1,6 @@
 ---
 name: c3d-catchments
-description: Catchment areas, flow paths, watershed delineation, drainage analysis, catchment properties, catchment labels
+description: Catchment areas, flow paths, watershed, drainage analysis, labels
 ---
 
 # Civil 3D Catchments

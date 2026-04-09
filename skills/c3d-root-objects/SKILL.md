@@ -1,6 +1,6 @@
 ---
 name: c3d-root-objects
-description: CivilApplication, CivilDocument, transactions, collections, settings hierarchy, and document locking patterns
+description: CivilApplication, CivilDocument, transactions, settings hierarchy, locking
 ---
 
 # Civil 3D Root Objects and Common Concepts

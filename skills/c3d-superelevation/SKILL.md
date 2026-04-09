@@ -1,6 +1,6 @@
 ---
 name: c3d-superelevation
-description: Superelevation design, attainment methods, transition tables, cross slope, pivot points, lane configurations, superelevation views
+description: Superelevation design, attainment, cross slope, pivot points, lane config
 ---
 
 # Civil 3D Superelevation

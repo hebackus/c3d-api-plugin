@@ -1,6 +1,6 @@
 ---
 name: acad-palettes-ribbon
-description: PaletteSet dockable tool palettes, Ribbon API (tabs, panels, buttons, combos), application menu, IExtensionApplication lifecycle for UI registration
+description: PaletteSet dockable palettes, Ribbon API (tabs, panels, buttons), IExtensionApplication
 ---
 
 # AutoCAD Palettes and Ribbon

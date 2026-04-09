@@ -1,6 +1,6 @@
 ---
 name: c3d-survey
-description: Survey database, survey figures, survey points, survey networks, equipment databases, linework processing, figure prefixes
+description: Survey database, figures, points, networks, equipment, linework processing
 ---
 
 # Civil 3D Survey

@@ -1,6 +1,6 @@
 ---
 name: acad-database-operations
-description: Database cloning (WblockCloneObjects, DeepCloneObjects), IdMapping, side databases, Insert, Wblock, ReadDwgFile, SaveAs, Purge, Audit, WorkingDatabase context switching
+description: Database cloning, DeepClone, WblockClone, IdMapping, side databases, Purge, Audit
 ---
 
 # AutoCAD Database Operations

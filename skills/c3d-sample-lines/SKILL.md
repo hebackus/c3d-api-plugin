@@ -1,6 +1,6 @@
 ---
 name: c3d-sample-lines
-description: Sample lines, sample line groups, section views, section network discovery for gravity and pressure pipe labeling in cross-section workflows
+description: Sample lines, sample line groups, section views, section network discovery
 ---
 
 # Civil 3D Sample Lines and Section Views

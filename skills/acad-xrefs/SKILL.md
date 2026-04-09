@@ -1,6 +1,6 @@
 ---
 name: acad-xrefs
-description: external references, xref attach and overlay, xref path management, binding xrefs, detach unload reload, nested xrefs, xref notification and demand loading, BlockTableRecord xref properties, xref layer naming, XrefGraph dependency analysis
+description: External references — attach, overlay, bind, path management, XrefGraph
 ---
 
 # AutoCAD External References (Xrefs)

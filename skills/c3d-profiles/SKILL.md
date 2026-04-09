@@ -1,6 +1,6 @@
 ---
 name: c3d-profiles
-description: Profile creation (from surface, by layout, from feature line, offset), profile views, PVIs, profile entities, band sets, and styles
+description: Profiles (surface, layout, offset), profile views, PVIs, band sets, styles
 ---
 
 # Civil 3D Profiles and Profile Views

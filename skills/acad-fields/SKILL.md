@@ -1,6 +1,6 @@
 ---
 name: acad-fields
-description: Fields (dynamic text) - creation from field codes, evaluation options, embedding in MText and attributes, field state management
+description: Dynamic text fields — field codes, evaluation, embedding in MText/attributes
 ---
 
 # AutoCAD Fields (Dynamic Text)

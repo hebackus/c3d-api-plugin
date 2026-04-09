@@ -1,6 +1,6 @@
 ---
 name: acad-blocks
-description: Block definitions, block references, attributes (definition and reference), dynamic block properties, exploding blocks
+description: Block definitions, references, attributes, dynamic block properties, exploding
 ---
 
 # AutoCAD Blocks and Attributes

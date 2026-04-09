@@ -1,6 +1,6 @@
 ---
 name: c3d-label-styles
-description: Label style creation, components (text, line, block, tick, direction arrow, reference text, text-for-each), property fields, style hierarchy, draw order, and style sharing between drawings
+description: Label style components, property fields, style hierarchy, text/line/block/tick elements
 ---
 
 # Civil 3D Label Styles

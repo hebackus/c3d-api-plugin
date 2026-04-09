@@ -1,6 +1,6 @@
 ---
 name: acad-palettes
-description: PaletteSet deep API reference (constructors, AddVisual WPF hosting, events, persistence, theming), Tool Palette API (catalogs, schemes, ToolPaletteManager), Properties Palette COM interfaces, lifecycle and zero-document state, decision matrix for choosing palette type
+description: PaletteSet hosting, WPF AddVisual, events, persistence, Tool Palette API, Properties Palette COM
 ---
 
 # AutoCAD Palette APIs

@@ -1,6 +1,6 @@
 {
   "name": "c3d-api",
-  "version": "1.0.0",
-  "description": "47 AutoCAD and Civil 3D .NET API reference skills for plugin development",
+  "version": "2.0.0",
+  "description": "Civil 3D / AutoCAD .NET API knowledge base — 48 skills, 6 MCP tools, 4 agents, 8,330 types",
   "skills": "./skills/"
 }

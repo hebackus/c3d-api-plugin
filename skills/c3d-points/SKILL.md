@@ -1,6 +1,6 @@
 ---
 name: c3d-points
-description: COGO points, point groups, user-defined properties (UDPs), point styles, label styles, description keys, and bulk editing
+description: COGO points, point groups, UDPs, description keys, point styles, bulk editing
 ---
 
 # Civil 3D Points

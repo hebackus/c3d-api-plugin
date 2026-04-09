@@ -1,6 +1,6 @@
 ---
 name: acad-events-overrules
-description: Database events, document events, application events, editor events, ObjectOverrule, DrawableOverrule, TransformOverrule, GripOverrule, overrule registration and filtering
+description: Database/document/editor events, ObjectOverrule, DrawableOverrule, TransformOverrule
 ---
 
 # AutoCAD Events and Overrules

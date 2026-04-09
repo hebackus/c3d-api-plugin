@@ -1,6 +1,6 @@
 ---
 name: c3d-custom-subassemblies
-description: Custom subassembly design in .NET - naming, parameters, superelevation, CorridorState, SubassemblyGenerator, targets, SATemplate pattern, and tool catalog
+description: Custom subassembly .NET design — CorridorState, SubassemblyGenerator, targets, SATemplate
 ---
 
 # Custom Subassemblies Using .NET

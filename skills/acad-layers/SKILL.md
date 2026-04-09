@@ -1,6 +1,6 @@
 ---
 name: acad-layers
-description: Layer table, layer records, properties, creation, states, filters, color and linetype assignment
+description: Layer table, layer records, properties, states, filters, color/linetype assignment
 ---
 
 # AutoCAD Layers

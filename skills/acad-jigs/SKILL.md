@@ -1,6 +1,6 @@
 ---
 name: acad-jigs
-description: EntityJig, DrawJig, interactive entity placement, live preview dragging, Sampler, Update, WorldDraw, Editor.Drag, JigPromptOptions, multi-step jigs, cursor types
+description: EntityJig, DrawJig — interactive placement, live preview, Sampler, WorldDraw
 ---
 
 # AutoCAD Jigs

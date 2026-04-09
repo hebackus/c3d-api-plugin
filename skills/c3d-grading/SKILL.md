@@ -1,6 +1,6 @@
 ---
 name: c3d-grading
-description: Grading groups, grading objects, grading criteria, feature line grading, daylight projections, volume calculation, and grading styles
+description: Grading groups, criteria, feature line grading, daylight, volume calculation
 ---
 
 # Civil 3D Grading

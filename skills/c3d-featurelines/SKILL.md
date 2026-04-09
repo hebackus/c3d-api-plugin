@@ -1,6 +1,6 @@
 ---
 name: c3d-featurelines
-description: Feature lines - grading/standalone FeatureLine (DBObject) and corridor CorridorFeatureLine (computed), creation, elevation management, export
+description: FeatureLine and CorridorFeatureLine — creation, elevation editing, grading, export
 ---
 
 # Civil 3D Feature Lines

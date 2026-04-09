@@ -1,6 +1,6 @@
 ---
 name: c3d-surfaces
-description: TIN, Grid, and Volume surfaces - creation, point data, breaklines, contours, boundaries, smoothing, snapshots, extraction, and analysis
+description: TIN/Grid/Volume surfaces — creation, breaklines, contours, boundaries, analysis
 ---
 
 # Civil 3D Surfaces

@@ -1,6 +1,6 @@
 ---
 name: acad-polylines
-description: Polyline (lightweight), Polyline2d, Polyline3d, vertices, bulges, curves, area, conversion between polyline types
+description: Polyline, Polyline2d, Polyline3d — vertices, bulges, area, type conversion
 ---
 
 # AutoCAD Polylines

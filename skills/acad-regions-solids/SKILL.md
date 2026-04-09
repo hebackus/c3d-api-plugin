@@ -1,6 +1,6 @@
 ---
 name: acad-regions-solids
-description: Regions, 3D solids, and surfaces - boolean operations, extrusion, revolution, sweep, loft, mass properties, sectioning, and Brep sub-entity access
+description: Regions, 3D solids — boolean ops, extrusion, sweep, loft, mass properties, Brep
 ---
 
 # AutoCAD Regions and 3D Solids

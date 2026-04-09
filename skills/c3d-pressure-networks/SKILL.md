@@ -1,6 +1,6 @@
 ---
 name: c3d-pressure-networks
-description: Pressure pipes, fittings, appurtenances, pressure parts lists, design checks, pressure network creation, pressure network labels
+description: Pressure pipes, fittings, appurtenances, parts lists, design checks, labels
 ---
 
 # Civil 3D Pressure Networks

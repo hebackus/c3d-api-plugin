@@ -1,6 +1,6 @@
 ---
 name: c3d-mass-haul
-description: Mass haul diagrams, free haul, overhaul, borrow pits, waste sites, earthwork balance lines, mass haul views
+description: Mass haul diagrams, free haul, overhaul, borrow/waste, balance lines
 ---
 
 # Civil 3D Mass Haul

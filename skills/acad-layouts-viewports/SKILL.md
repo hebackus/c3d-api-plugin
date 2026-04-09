@@ -1,6 +1,6 @@
 ---
 name: acad-layouts-viewports
-description: Paper space layouts, layout manager, viewport creation and configuration, viewport properties, model space vs paper space, plot settings, viewport layer overrides, layout events
+description: Paper space layouts, viewport creation, properties, layer overrides, plot settings
 ---
 
 # AutoCAD Layouts and Viewports

@@ -1,7 +1,7 @@
 ---
 name: skill-reviewer
 description: Reviews c3d-api SKILL.md files for format compliance, API accuracy, missing gotchas, stale cross-references, and consistency with other skills in the plugin
-tools: Glob, Grep, LS, Read, WebFetch, WebSearch, TodoWrite
+tools: Glob, Grep, LS, Read, WebFetch, WebSearch, TodoWrite, mcp__c3d_api__lookup_type, mcp__c3d_api__search_api, mcp__c3d_api__get_parameters, mcp__c3d_api__get_enum_values
 model: sonnet
 color: red
 ---
@@ -33,7 +33,7 @@ Check each skill against the required format:
 **2. API Accuracy**
 For each code example:
 
-- Verify class names, method signatures, and property names are correct
+- Use `lookup_type` and `get_parameters` to verify class names, method signatures, and property names are correct
 - Check that transaction patterns follow correct open/commit/dispose flow
 - Verify cast patterns (e.g., `(LayerTable)tr.GetObject(...)` not `tr.GetObject(...) as LayerTable` for symbol tables)
 - Check that OpenMode usage is correct (ForRead vs ForWrite vs ForNotify)

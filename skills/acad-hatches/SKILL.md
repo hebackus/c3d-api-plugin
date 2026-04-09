@@ -1,6 +1,6 @@
 ---
 name: acad-hatches
-description: Hatches and gradient fills - pattern creation, boundary loops (polyline and entity-based), gradient fills, associativity, hatch styles
+description: Hatch patterns, gradient fills, boundary loops, associativity, hatch styles
 ---
 
 # AutoCAD Hatches and Gradient Fills

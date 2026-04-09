@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "c3d-api": {
+      "command": "py",
+      "args": ["mcp-server/server.py"]
+    }
+  }
+}

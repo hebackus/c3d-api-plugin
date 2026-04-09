@@ -1,6 +1,6 @@
 ---
 name: acad-linetypes-textstyles
-description: LinetypeTable, LinetypeTableRecord, loading linetypes from .lin files, linetype properties, simple and complex linetypes, LTSCALE system variables, TextStyleTable, TextStyleTableRecord, creating text styles, TrueType vs SHX fonts, SHX shapes for complex linetypes
+description: Linetype and text style creation, loading from .lin files, TrueType/SHX fonts
 ---
 
 # AutoCAD Linetypes and Text Styles

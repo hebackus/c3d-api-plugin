@@ -1,6 +1,6 @@
 ---
 name: acad-mleaders
-description: Multileaders - creation, leader lines and vertices, MText and Block content, dogleg/landing settings, MLeaderStyle configuration
+description: Multileaders — leader lines, MText/Block content, dogleg/landing, MLeaderStyle
 ---
 
 # AutoCAD Multileaders (MLeader)

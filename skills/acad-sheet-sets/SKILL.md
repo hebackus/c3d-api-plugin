@@ -1,6 +1,6 @@
 ---
 name: acad-sheet-sets
-description: Use when reading or writing AutoCAD Sheet Set (.dst) files from a .NET plugin — accessing sheets, subsets, custom properties, lock management, and the AcSmSheetSetMgr COM API
+description: Sheet Set (.dst) COM API — sheets, subsets, custom properties, lock management
 ---
 
 # AutoCAD Sheet Set Manager (.NET)

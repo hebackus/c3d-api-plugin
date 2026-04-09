@@ -1,6 +1,6 @@
 ---
 name: acad-xdata-dictionaries
-description: XData reading and writing, RegAppTable registration, ResultBuffer construction, Named Object Dictionary, Extension Dictionaries, XRecord storage, DBDictionary operations, choosing between XData vs XRecord vs Extension Dictionary
+description: XData, XRecord, extension dictionaries, Named Object Dictionary, ResultBuffer
 ---
 
 # XData and Dictionaries

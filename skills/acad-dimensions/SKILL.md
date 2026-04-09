@@ -1,6 +1,6 @@
 ---
 name: acad-dimensions
-description: Dimensions - aligned, rotated, arc, radial, diametric, angular, ordinate - creation, text overrides, and dimension styles
+description: Dimensions — aligned, rotated, arc, radial, angular, ordinate, text overrides
 ---
 
 # AutoCAD Dimensions

@@ -1,6 +1,6 @@
 ---
 name: c3d-quantity-takeoff
-description: Quantity takeoff criteria, pay items, material computation, earthwork volumes, quantity reports, QTO manager integration
+description: QTO criteria, pay items, material computation, earthwork volumes, reports
 ---
 
 # Civil 3D Quantity Takeoff

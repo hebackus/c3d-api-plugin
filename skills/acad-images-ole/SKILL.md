@@ -1,6 +1,6 @@
 ---
 name: acad-images-ole
-description: Raster images, image definitions, image clipping, OLE objects, PDF/DWF/DGN underlays, wipeouts, image adjustment, underlay layer filtering
+description: Raster images, PDF/DWF/DGN underlays, OLE objects, wipeouts, image clipping
 ---
 
 # AutoCAD Images, Underlays, and OLE Objects

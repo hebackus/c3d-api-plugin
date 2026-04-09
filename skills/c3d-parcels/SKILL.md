@@ -1,6 +1,6 @@
 ---
 name: c3d-parcels
-description: Sites, parcels, parcel topology, subdivision, parcel segments, parcel labels, renumbering, parcel styles
+description: Sites, parcels, topology, subdivision, segments, labels, renumbering
 ---
 
 # Civil 3D Parcels

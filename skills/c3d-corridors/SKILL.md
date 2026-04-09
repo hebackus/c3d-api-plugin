@@ -1,6 +1,6 @@
 ---
 name: c3d-corridors
-description: Corridors, baselines, baseline regions, assemblies, subassemblies, feature lines, corridor surfaces, and styles
+description: Corridors, baselines, regions, assemblies, subassemblies, corridor surfaces
 ---
 
 # Civil 3D Corridors

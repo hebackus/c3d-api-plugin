@@ -1,6 +1,6 @@
 ---
 name: c3d-project-setup
-description: Set up a .NET project for AutoCAD Civil 3D 2026 plugin development - references, namespaces, project config, and debugging
+description: .NET project setup for Civil 3D 2026 — references, namespaces, config, debugging
 ---
 
 # Civil 3D .NET Project Setup

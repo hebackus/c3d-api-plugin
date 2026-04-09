@@ -1,6 +1,6 @@
 ---
 name: acad-tables
-description: Tables - creation, cell content (text, blocks, fields), formatting, row/column operations, merging, table styles, data linking
+description: Tables — cell content, formatting, row/column ops, merging, styles, data linking
 ---
 
 # AutoCAD Tables

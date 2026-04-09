@@ -1,6 +1,6 @@
 ---
 name: c3d-intersections
-description: Intersection objects, curb returns, corridor intersection geometry, intersection labels, approach roads, intersection styles
+description: Intersection objects, curb returns, corridor geometry, approach roads, labels
 ---
 
 # Civil 3D Intersections

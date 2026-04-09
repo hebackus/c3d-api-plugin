@@ -1,6 +1,6 @@
 ---
 name: acad-plot-publish
-description: PlotSettings, PlotSettingsValidator, PlotEngine single-sheet plotting, batch publishing with DSD, named page setups, plot to file (PDF/DWF/PLT), plot device enumeration, plot preview, BACKGROUNDPLOT, PlotReactorManager events
+description: PlotEngine, batch publishing with DSD, page setups, plot to PDF/DWF/PLT
 ---
 
 # AutoCAD Plotting and Publishing

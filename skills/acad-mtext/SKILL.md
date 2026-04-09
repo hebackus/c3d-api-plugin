@@ -1,6 +1,6 @@
 ---
 name: acad-mtext
-description: MText (multiline text), DBText (single-line text) - creation, formatting codes, columns, fragment parsing, text styles
+description: MText and DBText — creation, formatting codes, columns, fragment parsing
 ---
 
 # AutoCAD Text (MText and DBText)

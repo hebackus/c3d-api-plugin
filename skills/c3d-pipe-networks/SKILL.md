@@ -1,6 +1,6 @@
 ---
 name: c3d-pipe-networks
-description: Gravity and pressure pipe networks - creation, pipes, structures, parts lists, labels, styles, and interference checks
+description: Gravity/pressure pipe networks — pipes, structures, parts lists, labels, styles
 ---
 
 # Civil 3D Pipe Networks

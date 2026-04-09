@@ -1,6 +1,6 @@
 ---
 name: c3d-alignments
-description: Alignment creation, entities, stations, station equations, design speeds, superelevation, and alignment styles
+description: Alignments — creation, entities, stations, design speeds, superelevation
 ---
 
 # Civil 3D Alignments

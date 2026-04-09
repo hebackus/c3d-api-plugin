@@ -1,6 +1,6 @@
 ---
 name: c3d-data-shortcuts
-description: Data shortcut references, DataShortcutManager, CreateReference, SynchronizeImport, cross-drawing object references, broken reference repair, working and project folders
+description: Data shortcut references, cross-drawing objects, broken reference repair
 ---
 
 # Civil 3D Data Shortcuts and Cross-Drawing References

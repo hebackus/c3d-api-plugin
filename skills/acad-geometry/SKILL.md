@@ -1,6 +1,6 @@
 ---
 name: acad-geometry
-description: Points, vectors, matrices, lines, arcs, curves, planes, bounds, tolerance - construction, transforms, intersections, and common recipes
+description: Points, vectors, matrices, curves, planes — transforms, intersections, recipes
 ---
 
 # AutoCAD Geometry (Autodesk.AutoCAD.Geometry)

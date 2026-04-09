@@ -1,6 +1,6 @@
 ---
 name: acad-editor-input
-description: Editor prompts (point, entity, selection, string, keyword, angle, double, integer, distance), selection filters, TypedValue, prompt options
+description: Editor prompts — point, entity, selection, string, keyword, TypedValue filters
 ---
 
 # AutoCAD Editor Input
