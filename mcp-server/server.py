@@ -37,19 +37,27 @@ def _db() -> sqlite3.Connection:
 
 
 # ---------------------------------------------------------------------------
-# FTS helpers
+# Helpers
 # ---------------------------------------------------------------------------
-_FTS_UNSAFE = re.compile(r"[^\w\s*]", re.UNICODE)
+
+_PLURALS: dict[str, str] = {
+    "property": "Properties",
+    "class": "Classes",
+    "struct": "Structs",
+    "interface": "Interfaces",
+    "enum": "Enums",
+    "method": "Methods",
+    "field": "Fields",
+    "event": "Events",
+    "constructor": "Constructors",
+    "operator": "Operators",
+    "indexer": "Indexers",
+    "delegate": "Delegates",
+}
 
 
-def _sanitize_fts(query: str) -> str:
-    """Strip characters that break FTS5 MATCH and wrap tokens."""
-    cleaned = _FTS_UNSAFE.sub(" ", query).strip()
-    tokens = cleaned.split()
-    if not tokens:
-        return ""
-    # Quote each token so multi-word queries use implicit AND
-    return " ".join(f'"{t}"' for t in tokens)
+def _pluralize(kind: str) -> str:
+    return _PLURALS.get(kind.lower(), kind.title() + "s")
 
 
 # ---------------------------------------------------------------------------
@@ -80,6 +88,7 @@ def lookup_type(
     name: str,
     kind_filter: str | None = None,
     obsolete_only: bool = False,
+    include_inherited: bool = False,
 ) -> str:
     """Look up a Civil 3D or AutoCAD .NET API type by name.
 
@@ -87,21 +96,24 @@ def lookup_type(
     grouped by kind (properties, methods, events, fields, constructors).
 
     Args:
-        name: Exact type name (e.g. "Alignment", "Point3d"). Falls back to
-              fuzzy search if no exact match.
+        name: Exact type name (e.g. "Alignment", "Point3d"). Case-insensitive.
+              Falls back to fuzzy search if no match.
         kind_filter: Optional member kind filter — one of: property, method,
                      event, field, constructor, operator, indexer.
         obsolete_only: If True, return only obsolete members with their
                        deprecation messages.
+        include_inherited: If True, also list members from base classes.
     """
     db = _db()
 
-    # Exact match first
+    # Case-insensitive exact match (COLLATE NOCASE)
     row = db.execute(
         """SELECT t.id, t.name, t.kind, t.modifiers, t.base_type,
                   t.is_obsolete, t.obsolete_message, t.assembly, n.name AS ns
            FROM types t JOIN namespaces n ON t.namespace_id = n.id
-           WHERE t.name = ?""",
+           WHERE t.name = ? COLLATE NOCASE
+           ORDER BY CASE WHEN t.assembly LIKE '%Civil%' THEN 0 ELSE 1 END
+           LIMIT 1""",
         (name,),
     ).fetchone()
 
@@ -174,12 +186,46 @@ def lookup_type(
         if m["kind"] != current_kind:
             current_kind = m["kind"]
             kind_count = sum(1 for x in members if x["kind"] == current_kind)
-            out.append(f"### {current_kind.title()}s ({kind_count})")
+            out.append(f"### {_pluralize(current_kind)} ({kind_count})")
         mods = f" [{m['modifiers']}]" if m["modifiers"] else ""
         ret = f" -> {m['return_type']}" if m["return_type"] else ""
         obs_mark = " **[OBSOLETE]**" if m["is_obsolete"] else ""
         obs_msg = f" _{m['obsolete_message']}_" if m["is_obsolete"] and m["obsolete_message"] else ""
         out.append(f"- `{m['name']}`{ret}{mods}{obs_mark}{obs_msg}")
+
+    # Inherited members
+    if include_inherited and not obsolete_only:
+        base_name = row["base_type"]
+        seen: set[str] = {row["name"]}
+        while base_name and base_name not in seen:
+            seen.add(base_name)
+            base_row = db.execute(
+                """SELECT t.id, t.name, t.base_type FROM types t
+                   WHERE t.name = ? COLLATE NOCASE LIMIT 1""",
+                (base_name,),
+            ).fetchone()
+            if not base_row:
+                break
+            inherit_params: list = [base_row["id"]]
+            if kind_filter:
+                inherit_params_extra = [base_row["id"], kind_filter.lower()]
+                kind_clause = " AND m.kind = ?"
+            else:
+                inherit_params_extra = [base_row["id"]]
+                kind_clause = ""
+            base_members = db.execute(
+                f"""SELECT m.kind, m.name, m.return_type, m.modifiers
+                    FROM members m WHERE m.type_id = ?{kind_clause}
+                    ORDER BY m.kind, m.name""",
+                inherit_params_extra,
+            ).fetchall()
+            if base_members:
+                out.append(f"\n**Inherited from {base_row['name']}:**")
+                for m in base_members:
+                    ret = f" -> {m['return_type']}" if m["return_type"] else ""
+                    mods = f" [{m['modifiers']}]" if m["modifiers"] else ""
+                    out.append(f"- `{m['name']}`{ret}{mods}")
+            base_name = base_row["base_type"]
 
     return "\n".join(out)
 
@@ -189,7 +235,8 @@ def lookup_type(
 def search_api(query: str, limit: int = 20) -> str:
     """Full-text search across all API types and members.
 
-    Searches type names, base types, member names, and return types.
+    Searches type names and member names. Multi-word queries (e.g. "Surface Volume")
+    match names containing ALL tokens (case-insensitive).
     Returns a combined list of matching types and members.
 
     Args:
@@ -197,65 +244,45 @@ def search_api(query: str, limit: int = 20) -> str:
         limit: Maximum results to return (default 20).
     """
     db = _db()
-    fts_query = _sanitize_fts(query)
+
+    # Tokenize on whitespace; each token must appear in the name (AND semantics).
+    # This handles both single-word CamelCase and space-separated queries.
+    tokens = query.split()
+    if not tokens:
+        return f"No results for '{query}'."
+
+    # Build per-token LIKE conditions
+    type_conds = " AND ".join("t.name LIKE ?" for _ in tokens)
+    member_conds = " AND ".join("m.name LIKE ?" for _ in tokens)
+    like_args = [f"%{t}%" for t in tokens]
 
     results: list[str] = []
 
-    if fts_query:
-        # Search types
-        type_rows = db.execute(
-            """SELECT t.name, t.kind, n.name AS ns
-               FROM types_fts fts
-               JOIN types t ON fts.rowid = t.id
-               JOIN namespaces n ON t.namespace_id = n.id
-               WHERE types_fts MATCH ?
+    type_rows = db.execute(
+        f"""SELECT t.name, t.kind, n.name AS ns
+           FROM types t JOIN namespaces n ON t.namespace_id = n.id
+           WHERE {type_conds}
+           ORDER BY length(t.name), t.name
+           LIMIT ?""",
+        like_args + [limit],
+    ).fetchall()
+
+    for r in type_rows:
+        results.append(f"- **[type]** {r['name']} ({r['kind']}) — {r['ns']}")
+
+    remaining = max(0, limit - len(type_rows))
+    if remaining > 0:
+        member_rows = db.execute(
+            f"""SELECT t.name AS type_name, m.name, m.kind, m.return_type
+               FROM members m JOIN types t ON m.type_id = t.id
+               WHERE {member_conds}
+               ORDER BY length(m.name), m.name
                LIMIT ?""",
-            (fts_query, limit),
+            like_args + [remaining],
         ).fetchall()
-
-        for r in type_rows:
-            results.append(f"- **[type]** {r['name']} ({r['kind']}) — {r['ns']}")
-
-        # Search members
-        remaining = max(0, limit - len(type_rows))
-        if remaining > 0:
-            member_rows = db.execute(
-                """SELECT t.name AS type_name, m.name, m.kind, m.return_type
-                   FROM members_fts fts
-                   JOIN members m ON fts.rowid = m.id
-                   JOIN types t ON m.type_id = t.id
-                   WHERE members_fts MATCH ?
-                   LIMIT ?""",
-                (fts_query, remaining),
-            ).fetchall()
-
-            for r in member_rows:
-                ret = f" -> {r['return_type']}" if r["return_type"] else ""
-                results.append(f"- **[{r['kind']}]** {r['type_name']}.{r['name']}{ret}")
-
-    # LIKE fallback if FTS returned nothing
-    if not results:
-        like_pattern = f"%{query}%"
-        type_rows = db.execute(
-            """SELECT t.name, t.kind, n.name AS ns
-               FROM types t JOIN namespaces n ON t.namespace_id = n.id
-               WHERE t.name LIKE ? ORDER BY t.name LIMIT ?""",
-            (like_pattern, limit),
-        ).fetchall()
-        for r in type_rows:
-            results.append(f"- **[type]** {r['name']} ({r['kind']}) — {r['ns']}")
-
-        remaining = max(0, limit - len(type_rows))
-        if remaining > 0:
-            member_rows = db.execute(
-                """SELECT t.name AS type_name, m.name, m.kind, m.return_type
-                   FROM members m JOIN types t ON m.type_id = t.id
-                   WHERE m.name LIKE ? ORDER BY m.name LIMIT ?""",
-                (like_pattern, remaining),
-            ).fetchall()
-            for r in member_rows:
-                ret = f" -> {r['return_type']}" if r["return_type"] else ""
-                results.append(f"- **[{r['kind']}]** {r['type_name']}.{r['name']}{ret}")
+        for r in member_rows:
+            ret = f" -> {r['return_type']}" if r["return_type"] else ""
+            results.append(f"- **[{r['kind']}]** {r['type_name']}.{r['name']}{ret}")
 
     if not results:
         return f"No results for '{query}'."
@@ -298,6 +325,16 @@ def get_parameters(type_name: str, member_name: str) -> str:
             ).fetchall()
 
     if not rows:
+        similar = db.execute(
+            """SELECT DISTINCT m.name, m.kind FROM members m
+               JOIN types t ON m.type_id = t.id
+               WHERE t.name = ? COLLATE NOCASE AND m.name LIKE ?
+               ORDER BY m.name LIMIT 10""",
+            (type_name, f"%{member_name}%"),
+        ).fetchall()
+        if similar:
+            suggestions = ", ".join(f"`{m['name']}`" for m in similar)
+            return f"No member '{member_name}' found on type '{type_name}'. Similar members: {suggestions}"
         return f"No member '{member_name}' found on type '{type_name}'."
 
     out: list[str] = [f"## {type_name}.{member_name} — {len(rows)} overload(s)\n"]
@@ -376,6 +413,8 @@ def get_enum_values(enum_name: str) -> str:
 
     if not values:
         out.append("_(no values defined)_")
+        if type_row["ns"] in ("(global)", "", None):
+            out.append("_Note: namespace is (global) — this may be a parser artifact. The actual type may exist in a specific assembly namespace._")
 
     return "\n".join(out)
 
@@ -440,7 +479,7 @@ def list_namespace(namespace: str) -> str:
         if r["kind"] != current_kind:
             current_kind = r["kind"]
             kind_count = sum(1 for x in rows if x["kind"] == current_kind)
-            out.append(f"### {current_kind.title()}s ({kind_count})")
+            out.append(f"### {_pluralize(current_kind)} ({kind_count})")
         obs = " [OBSOLETE]" if r["is_obsolete"] else ""
         out.append(f"- {r['name']}{obs}")
 
