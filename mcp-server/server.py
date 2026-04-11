@@ -569,6 +569,278 @@ def search_devguide(query: str, limit: int = 10) -> str:
     return "\n".join(out)
 
 
+# ---- Tool 7: find_members ------------------------------------------------
+@mcp.tool()
+def find_members(member_name: str, kind_filter: str | None = None, limit: int = 20) -> str:
+    """Find all types that have a member with the given name.
+
+    Useful when you know a method/property name but not which class owns it.
+
+    Args:
+        member_name: Member name to search for (e.g. "GetStationOffset", "Name").
+                     Substring match — partial names work.
+        kind_filter: Optional — filter by member kind: method, property, event, field, constructor.
+        limit: Max results (default 20).
+    """
+    db = _db()
+
+    where = "m.name LIKE ?"
+    params: list = [f"%{member_name}%"]
+    if kind_filter:
+        where += " AND m.kind = ?"
+        params.append(kind_filter.lower())
+
+    rows = db.execute(
+        f"""SELECT m.name AS member_name, m.kind AS member_kind, m.return_type,
+                   t.name AS type_name, t.kind AS type_kind, n.name AS ns
+            FROM members m
+            JOIN types t ON m.type_id = t.id
+            JOIN namespaces n ON t.namespace_id = n.id
+            WHERE {where}
+            ORDER BY t.name, m.kind, m.name
+            LIMIT ?""",
+        params + [limit * 10],  # fetch extra to account for overloads before dedup
+    ).fetchall()
+
+    if not rows:
+        return f"No members found matching '{member_name}'."
+
+    # Group by type, deduplicate overloads with same name+return_type
+    from collections import defaultdict
+    type_members: dict = defaultdict(list)
+    type_meta: dict = {}
+    seen: set = set()
+    for r in rows:
+        key = (r["type_name"], r["member_name"], r["return_type"] or "")
+        if key in seen:
+            continue
+        seen.add(key)
+        type_members[r["type_name"]].append(r)
+        if r["type_name"] not in type_meta:
+            type_meta[r["type_name"]] = (r["type_kind"], r["ns"])
+
+    # Apply limit by number of types
+    type_names = list(type_members.keys())[:limit]
+    total_types = len(type_members)
+
+    out: list[str] = [
+        f"## Types with member matching '{member_name}' ({total_types} type(s))\n"
+    ]
+
+    for tname in type_names:
+        tkind, ns = type_meta[tname]
+        out.append(f"**{tname}** ({tkind}) — {ns}")
+        for m in type_members[tname]:
+            ret = f" -> {m['return_type']}" if m["return_type"] else ""
+            out.append(f"- `{m['member_name']}` ({m['member_kind']}){ret}")
+        out.append("")
+
+    if total_types > limit:
+        out.append(f"_... and {total_types - limit} more type(s). Narrow the search or increase limit._")
+
+    return "\n".join(out)
+
+
+# ---- Tool 8: get_type_hierarchy ------------------------------------------
+@mcp.tool()
+def get_type_hierarchy(name: str) -> str:
+    """Show the type hierarchy for a class or interface.
+
+    For a class: shows its base chain upward AND direct subclasses downward.
+    For an interface: shows all types that implement it.
+
+    Args:
+        name: Type name (e.g. "Surface", "ITinSurface", "Entity").
+    """
+    db = _db()
+
+    row = db.execute(
+        """SELECT t.id, t.name, t.kind, t.base_type, n.name AS ns
+           FROM types t JOIN namespaces n ON t.namespace_id = n.id
+           WHERE t.name = ? COLLATE NOCASE
+           ORDER BY CASE WHEN t.assembly LIKE '%Civil%' THEN 0 ELSE 1 END
+           LIMIT 1""",
+        (name,),
+    ).fetchone()
+
+    if row is None:
+        candidates = db.execute(
+            """SELECT t.name, t.kind, n.name AS ns
+               FROM types t JOIN namespaces n ON t.namespace_id = n.id
+               WHERE t.name LIKE ? ORDER BY t.name LIMIT 10""",
+            (f"%{name}%",),
+        ).fetchall()
+        if not candidates:
+            return f"No type found matching '{name}'."
+        lines = [f"No exact match for '{name}'. Did you mean:\n"]
+        for c in candidates:
+            lines.append(f"- **{c['name']}** ({c['kind']}) — {c['ns']}")
+        return "\n".join(lines)
+
+    out: list[str] = []
+
+    if row["kind"] == "interface":
+        # Show all implementors
+        impls = db.execute(
+            """SELECT t.name, t.kind, n.name AS ns
+               FROM types t
+               JOIN type_interfaces ti ON t.id = ti.type_id
+               JOIN namespaces n ON t.namespace_id = n.id
+               WHERE ti.interface_name = ? COLLATE NOCASE
+               ORDER BY t.name""",
+            (row["name"],),
+        ).fetchall()
+
+        out.append(f"## {row['name']} — implementors ({len(impls)})\n")
+        if not impls:
+            out.append("_No implementors found._")
+        else:
+            for impl in impls:
+                out.append(f"- **{impl['name']}** ({impl['kind']}) — {impl['ns']}")
+    else:
+        # Class/struct: base chain upward + direct subclasses downward
+        out.append(f"## {row['name']} — {row['kind']} hierarchy\n")
+
+        # Walk base chain upward
+        chain: list[str] = [row["name"]]
+        base = row["base_type"]
+        seen: set[str] = {row["name"]}
+        while base and base not in seen:
+            chain.append(base)
+            seen.add(base)
+            base_row = db.execute(
+                "SELECT base_type FROM types WHERE name = ? COLLATE NOCASE LIMIT 1",
+                (base,),
+            ).fetchone()
+            base = base_row["base_type"] if base_row else None
+
+        out.append("**Base chain:**")
+        out.append(" -> ".join(chain))
+        out.append("")
+
+        # Direct subclasses downward
+        subs = db.execute(
+            """SELECT t.name, t.kind FROM types t
+               WHERE t.base_type = ? COLLATE NOCASE
+               ORDER BY t.name""",
+            (row["name"],),
+        ).fetchall()
+
+        out.append(f"**Direct subclasses ({len(subs)}):**")
+        if not subs:
+            out.append("_None found._")
+        else:
+            for s in subs:
+                out.append(f"- {s['name']} ({s['kind']})")
+
+    return "\n".join(out)
+
+
+# ---- Tool 9: find_related ------------------------------------------------
+@mcp.tool()
+def find_related(type_name: str) -> str:
+    """Find factories, collections, and events related to a type.
+
+    Helps answer "how do I create X?" and "where does X live in the object model?"
+
+    Args:
+        type_name: The type to investigate (e.g. "Alignment", "TinSurface").
+    """
+    db = _db()
+
+    # Verify the type exists (case-insensitive); normalize name for queries
+    type_row = db.execute(
+        "SELECT name FROM types WHERE name = ? COLLATE NOCASE LIMIT 1",
+        (type_name,),
+    ).fetchone()
+    canonical = type_row["name"] if type_row else type_name
+
+    out: list[str] = [f"## Related to '{canonical}'\n"]
+    any_results = False
+
+    # 1. Static factory methods on the type itself
+    factories = db.execute(
+        """SELECT m.name, m.return_type FROM members m
+           JOIN types t ON m.type_id = t.id
+           WHERE t.name = ? COLLATE NOCASE
+             AND m.modifiers LIKE '%static%'
+             AND (m.name LIKE '%Create%' OR m.name LIKE '%Add%' OR m.name LIKE '%New%')
+           ORDER BY m.name""",
+        (canonical,),
+    ).fetchall()
+
+    if factories:
+        any_results = True
+        out.append(f"### Static factory methods on {canonical}")
+        seen_factories: set[str] = set()
+        for f in factories:
+            key = (f["name"], f["return_type"] or "")
+            if key in seen_factories:
+                continue
+            seen_factories.add(key)
+            ret = f" -> {f['return_type']}" if f["return_type"] else ""
+            out.append(f"- `{f['name']}` [static]{ret}")
+        out.append("")
+
+    # 2. Collection types
+    collections = db.execute(
+        """SELECT name, kind FROM types
+           WHERE name LIKE ? OR name LIKE ?
+           ORDER BY name LIMIT 10""",
+        (f"%{canonical}Collection%", f"%{canonical}%Collection"),
+    ).fetchall()
+
+    if collections:
+        any_results = True
+        out.append("### Collection types")
+        for c in collections:
+            out.append(f"- {c['name']} ({c['kind']})")
+        out.append("")
+
+    # 3. Methods on other types that return this type
+    returned_by = db.execute(
+        """SELECT t.name AS owner, m.name AS method, m.kind
+           FROM members m
+           JOIN types t ON m.type_id = t.id
+           WHERE m.return_type LIKE ?
+             AND t.name != ? COLLATE NOCASE
+           ORDER BY t.name, m.name
+           LIMIT 15""",
+        (f"%{canonical}%", canonical),
+    ).fetchall()
+
+    if returned_by:
+        any_results = True
+        total = len(returned_by)
+        out.append("### Returned by")
+        shown = returned_by[:10]
+        for r in shown:
+            out.append(f"- `{r['owner']}.{r['method']}` ({r['kind']})")
+        if total > 10:
+            out.append(f"  _... {total - 10} more_")
+        out.append("")
+
+    # 4. Event types
+    events = db.execute(
+        """SELECT name, kind FROM types
+           WHERE name LIKE ? OR name LIKE ?
+           ORDER BY name LIMIT 5""",
+        (f"%{canonical}%EventArgs%", f"%{canonical}%Event%"),
+    ).fetchall()
+
+    if events:
+        any_results = True
+        out.append("### Event types")
+        for e in events:
+            out.append(f"- {e['name']} ({e['kind']})")
+        out.append("")
+
+    if not any_results:
+        out.append(f"_No related factories, collections, or events found for '{canonical}'._")
+
+    return "\n".join(out)
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
