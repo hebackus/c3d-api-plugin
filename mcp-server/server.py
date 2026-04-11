@@ -7,6 +7,7 @@ files as structured MCP tools for Claude Code.
 import os
 import re
 import sqlite3
+from collections import defaultdict
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
@@ -606,7 +607,6 @@ def find_members(member_name: str, kind_filter: str | None = None, limit: int = 
         return f"No members found matching '{member_name}'."
 
     # Group by type, deduplicate overloads with same name+return_type
-    from collections import defaultdict
     type_members: dict = defaultdict(list)
     type_meta: dict = {}
     seen: set = set()
@@ -753,7 +753,20 @@ def find_related(type_name: str) -> str:
         "SELECT name FROM types WHERE name = ? COLLATE NOCASE LIMIT 1",
         (type_name,),
     ).fetchone()
-    canonical = type_row["name"] if type_row else type_name
+    if type_row is None:
+        candidates = db.execute(
+            """SELECT t.name, t.kind, n.name AS ns FROM types t
+               JOIN namespaces n ON t.namespace_id = n.id
+               WHERE t.name LIKE ? ORDER BY t.name LIMIT 10""",
+            (f"%{type_name}%",),
+        ).fetchall()
+        if not candidates:
+            return f"No type found matching '{type_name}'."
+        lines = [f"No exact match for '{type_name}'. Did you mean:\n"]
+        for c in candidates:
+            lines.append(f"- **{c['name']}** ({c['kind']}) — {c['ns']}")
+        return "\n".join(lines)
+    canonical = type_row["name"]
 
     out: list[str] = [f"## Related to '{canonical}'\n"]
     any_results = False
@@ -784,10 +797,8 @@ def find_related(type_name: str) -> str:
 
     # 2. Collection types
     collections = db.execute(
-        """SELECT name, kind FROM types
-           WHERE name LIKE ? OR name LIKE ?
-           ORDER BY name LIMIT 10""",
-        (f"%{canonical}Collection%", f"%{canonical}%Collection"),
+        "SELECT name, kind FROM types WHERE name LIKE ? ORDER BY name LIMIT 10",
+        (f"%{canonical}%Collection%",),
     ).fetchall()
 
     if collections:
