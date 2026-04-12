@@ -113,7 +113,8 @@ def lookup_type(
                   t.is_obsolete, t.obsolete_message, t.assembly, n.name AS ns
            FROM types t JOIN namespaces n ON t.namespace_id = n.id
            WHERE t.name = ? COLLATE NOCASE
-           ORDER BY CASE WHEN t.assembly LIKE '%Civil%' THEN 0 ELSE 1 END
+           ORDER BY CASE WHEN n.name = '(global)' THEN 1 ELSE 0 END,
+                    CASE WHEN t.assembly LIKE '%Civil%' THEN 0 ELSE 1 END
            LIMIT 1""",
         (name,),
     ).fetchone()
@@ -202,7 +203,10 @@ def lookup_type(
             seen.add(base_name)
             base_row = db.execute(
                 """SELECT t.id, t.name, t.base_type FROM types t
-                   WHERE t.name = ? COLLATE NOCASE LIMIT 1""",
+                   JOIN namespaces n ON t.namespace_id = n.id
+                   WHERE t.name = ? COLLATE NOCASE
+                   ORDER BY CASE WHEN n.name = '(global)' THEN 1 ELSE 0 END
+                   LIMIT 1""",
                 (base_name,),
             ).fetchone()
             if not base_row:
@@ -378,7 +382,9 @@ def get_enum_values(enum_name: str) -> str:
     type_row = db.execute(
         """SELECT t.id, t.name, t.kind, n.name AS ns
            FROM types t JOIN namespaces n ON t.namespace_id = n.id
-           WHERE t.name = ?""",
+           WHERE t.name = ? COLLATE NOCASE
+           ORDER BY CASE WHEN n.name = '(global)' THEN 1 ELSE 0 END
+           LIMIT 1""",
         (enum_name,),
     ).fetchone()
 
@@ -658,7 +664,8 @@ def get_type_hierarchy(name: str) -> str:
         """SELECT t.id, t.name, t.kind, t.base_type, n.name AS ns
            FROM types t JOIN namespaces n ON t.namespace_id = n.id
            WHERE t.name = ? COLLATE NOCASE
-           ORDER BY CASE WHEN t.assembly LIKE '%Civil%' THEN 0 ELSE 1 END
+           ORDER BY CASE WHEN n.name = '(global)' THEN 1 ELSE 0 END,
+                    CASE WHEN t.assembly LIKE '%Civil%' THEN 0 ELSE 1 END
            LIMIT 1""",
         (name,),
     ).fetchone()
@@ -709,7 +716,11 @@ def get_type_hierarchy(name: str) -> str:
             chain.append(base)
             seen.add(base)
             base_row = db.execute(
-                "SELECT base_type FROM types WHERE name = ? COLLATE NOCASE LIMIT 1",
+                """SELECT t.base_type FROM types t
+                   JOIN namespaces n ON t.namespace_id = n.id
+                   WHERE t.name = ? COLLATE NOCASE
+                   ORDER BY CASE WHEN n.name = '(global)' THEN 1 ELSE 0 END
+                   LIMIT 1""",
                 (base,),
             ).fetchone()
             base = base_row["base_type"] if base_row else None
@@ -750,7 +761,11 @@ def find_related(type_name: str) -> str:
 
     # Verify the type exists (case-insensitive); normalize name for queries
     type_row = db.execute(
-        "SELECT name FROM types WHERE name = ? COLLATE NOCASE LIMIT 1",
+        """SELECT t.name FROM types t
+           JOIN namespaces n ON t.namespace_id = n.id
+           WHERE t.name = ? COLLATE NOCASE
+           ORDER BY CASE WHEN n.name = '(global)' THEN 1 ELSE 0 END
+           LIMIT 1""",
         (type_name,),
     ).fetchone()
     if type_row is None:
