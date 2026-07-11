@@ -28,7 +28,7 @@ Check each skill against the required format:
 - Gotchas section exists and is second-to-last
 - Related Skills section exists and is last
 - Related Skills entries use `- `name` — description` format
-- Target line count is 150-300 (flag outliers)
+- Target line count is ~150-450 (soft signal — flag only as minor). Exempt `*-class-reference` index skills (intentionally short). Don't flag large single-domain skills (e.g. corridors) on length alone.
 
 **2. API Accuracy**
 For each code example:

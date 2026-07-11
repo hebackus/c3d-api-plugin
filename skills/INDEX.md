@@ -1,6 +1,6 @@
 # Skills Index
 
-48 skills for Civil 3D / AutoCAD .NET API. Use: `CSharp/plugins/c3d-api/skills/<name>/SKILL.md`
+49 skills for Civil 3D / AutoCAD .NET API. Use: `CSharp/plugins/c3d-api/skills/<name>/SKILL.md`
 
 ## AutoCAD Skills (25)
 
@@ -32,7 +32,7 @@
 | `acad-xrefs` | External references (Xrefs) |
 | `autocad-class-reference` | AutoCAD 2026 .NET API — 1,248 types across 28 namespaces |
 
-## Civil 3D Skills (23)
+## Civil 3D Skills (24)
 
 | Skill | Description |
 |---|---|
@@ -56,6 +56,7 @@
 | `c3d-quantity-takeoff` | Quantity takeoff |
 | `c3d-root-objects` | CivilApplication, CivilDocument, transactions, settings |
 | `c3d-sample-lines` | Sample lines and section views |
+| `c3d-subassembly-patterns` | Stock-subassembly pattern catalog — need→file index, DrawImplement recipes, point/link/shape codes |
 | `c3d-superelevation` | Superelevation |
 | `c3d-surfaces` | TIN, Grid, Volume surfaces — creation, data, analysis |
 | `c3d-survey` | Survey |

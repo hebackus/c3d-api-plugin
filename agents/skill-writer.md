@@ -100,7 +100,7 @@ Code examples, property lists, explanatory prose.
 - Link to skills that share API concepts, common usage patterns, or selection/creation workflows
 
 **General:**
-- Target 250-400 lines per skill
+- Target ~150-450 lines per skill (soft guideline, not a hard cap). `*-class-reference` index skills are intentionally short and exempt. Large single-domain skills (e.g. corridors) may legitimately exceed 450.
 - No trailing whitespace
 - Single blank line between sections
 - Code-first: examples before explanations where possible

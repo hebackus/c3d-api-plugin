@@ -277,4 +277,5 @@ acadDoc.SendStringToExecute("SUPERELEVATION ", true, false, false);
 - `c3d-corridors` — corridors that consume superelevation for cross-section shaping
 - `c3d-profiles` — profile relationship with superelevation design
 - `c3d-custom-subassemblies` — subassemblies that read superelevation parameters
+- `c3d-subassembly-patterns` — SE axis-of-rotation recipe and stock-subassembly patterns
 - `c3d-root-objects` — CivilDocument access and transaction patterns

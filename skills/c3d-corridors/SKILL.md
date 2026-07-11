@@ -680,6 +680,7 @@ These are the most common pitfalls when working with corridors in the .NET API:
 - `c3d-profiles` — Profiles used as corridor baselines
 - `c3d-surfaces` — Surface objects vs corridor surfaces
 - `c3d-custom-subassemblies` — Creating custom subassembly code
+- `c3d-subassembly-patterns` — Stock-subassembly pattern catalog and DrawImplement recipes
 - `c3d-superelevation` — Superelevation data consumed by corridor subassemblies
 - `c3d-intersections` — Intersection objects that split corridor regions
 - `c3d-mass-haul` — Mass haul diagrams from corridor earthwork volumes
